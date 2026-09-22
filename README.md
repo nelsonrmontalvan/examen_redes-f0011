@@ -6,7 +6,7 @@ Examen interactivo de práctica con **guardado de intentos** en Supabase y **pan
 
 | Archivo | Para quién | Uso |
 |---|---|---|
-| `index.html` → `examen_if0011.html` | Estudiantes | Responder el examen y guardar el intento |
+| `index.html` | Estudiantes | Responder el examen (se sirve en la raíz `/`) y guardar el intento |
 | `admin.html` | Docente | Reportes: quién practicó, cuántas veces y puntos por intento |
 | `config.js` | Configuración | URL y anon key de Supabase |
 | `schema.sql` | Docente | Crea la tabla + reglas de seguridad (se ejecuta una sola vez) |
@@ -47,7 +47,7 @@ const SUPABASE_ANON_KEY = 'eyJ...';
 ```
 
 ### 5. Probar
-- Abra `examen_if0011.html`, responda unas preguntas y pulse **"Revisar mi puntaje y guardar"**. Debe aparecer "Intento guardado".
+- Abra `index.html`, responda unas preguntas y pulse **"Revisar mi puntaje y guardar"**. Debe aparecer "Intento guardado".
 - Abra `admin.html`, inicie sesión con su correo UCR → debe ver el intento registrado.
 
 ## Despliegue (Vercel)
@@ -64,6 +64,8 @@ git push -u origin main
 ```
 
 En https://vercel.com → **Add New → Project** → importe el repositorio (framework: **Other**, sin build command). Obtendrá una URL tipo `https://examen-if0011.vercel.app` donde los estudiantes practican y usted entra a `/admin.html` para los reportes.
+
+> En Netlify, la URL raíz `/` sirve automáticamente `index.html`; los reportes quedan en `/admin.html`.
 
 > Nota: si al guardar un intento aparece "sin conexión", revise que `config.js` tenga las claves reales y que haya ejecutado `schema.sql`.
 
