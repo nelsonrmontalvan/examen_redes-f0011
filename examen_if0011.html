@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Examen I — IF0011 Redes de Computadoras · 2026</title>
+<script src="config.js"></script>
+<script src="tailwind.js"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        ucr: { 50:'#eff7fd', 100:'#d9edf9', 200:'#b9def4', 300:'#87c9ec', 400:'#4dace0', 500:'#2490ce', 600:'#1576b4', 700:'#125e92', 800:'#144f78', 900:'#164364' },
+        tinta: '#1e293b'
+      }
+    }
+  }
+}
+</script>
+<style>
+  body { font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  @media print {
+    .no-print { display:none !important; }
+    .page-break { page-break-before: always; }
+    .print-block { display:block !important; }
+    body { background:#fff !important; }
+  }
+</style>
+</head>
+<body class="bg-slate-100 text-tinta leading-relaxed">
+
+  <!-- ===================== BARRRA SUPERIOR ===================== -->
+  <header class="bg-ucr-900 text-white shadow">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between gap-4">
+      <div>
+        <p class="text-xs sm:text-sm uppercase tracking-widest text-ucr-200">UCR · Sede del Caribe · Limón</p>
+        <h1 class="text-xl sm:text-2xl font-bold leading-tight">Examen I · IF0011 Redes de Computadoras</h1>
+        <p class="text-sm text-ucr-200">II Ciclo 2026 · Semanas 1 a 7</p>
+      </div>
+      <div class="flex flex-col items-end gap-2 no-print">
+        <button id="btnRevisar" class="bg-green-600 text-white px-4 py-2 rounded text-sm font-semibold hover:bg-green-500">
+          Revisar mi puntaje y guardar
+        </button>
+        <div class="flex gap-2">
+          <button id="btnImprimir" class="bg-white text-ucr-900 px-4 py-2 rounded text-sm font-semibold hover:bg-ucr-100">
+            Imprimir
+          </button>
+          <button id="btnProfesor" class="bg-ucr-700 px-4 py-2 rounded text-sm font-semibold text-white border border-ucr-500 hover:bg-ucr-600">
+            Clave profesor
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===================== DATOS DEL ESTUDIANTE ===================== -->
+  <section class="max-w-5xl mx-auto px-4 sm:px-6 mt-6">
+    <div class="bg-white rounded-md border border-slate-200 p-4 sm:p-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div>
+        <label for="nombre" class="block text-sm font-semibold text-slate-700">Nombre completo</label>
+        <input id="nombre" type="text" class="mt-1 w-full border border-slate-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ucr-500">
+      </div>
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label for="carnet" class="block text-sm font-semibold text-slate-700">Carné</label>
+          <input id="carnet" type="text" class="mt-1 w-full border border-slate-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ucr-500">
+        </div>
+        <div>
+          <label for="grupo" class="block text-sm font-semibold text-slate-700">Grupo</label>
+          <input id="grupo" type="text" class="mt-1 w-full border border-slate-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ucr-500">
+        </div>
+      </div>
+    </div>
+
+    <!-- Instrucciones -->
+    <div class="bg-ucr-50 border border-ucr-200 rounded-md mt-4 p-4 sm:p-6">
+      <h2 class="font-bold text-ucr-800 text-lg">Instrucciones</h2>
+      <ul class="mt-2 text-sm space-y-1.5 list-disc pl-5">
+        <li><strong>Parte I (50 pts):</strong> 40 preguntas de teoría. Tiempo sugerido de 60 minutos. No se permite material de consulta.</li>
+        <li><strong>Parte II (10 pts):</strong> un caso de subnetting. Responda en los campos indicados.</li>
+        <li><strong>Parte III (40 pts):</strong> tres casos prácticos que debe configurar en <strong>Cisco Packet Tracer</strong>. Escriba los comandos completos tal y como los usaría en el CLI. El docente verificará la topología final.</li>
+        <li>Puntaje total del examen: <strong>100 pts</strong>. Valor: <strong>25 %</strong> de la nota del curso.</li>
+      </ul>
+    </div>
+  </section>
+
+  <main class="max-w-5xl mx-auto px-4 sm:px-6 mt-6 space-y-8 pb-16">
+
+    <!-- ============================================================ -->
+    <!-- PARTE I : TEORIA                                            -->
+    <!-- ============================================================ -->
+    <section>
+      <div class="flex items-center justify-between bg-white border border-slate-200 rounded-t-md px-5 py-3">
+        <h2 class="text-lg font-bold text-slate-800">Parte I · Teoría <span class="text-sm font-normal text-slate-500">(50 pts)</span></h2>
+        <span class="text-xs bg-slate-100 px-3 py-1 rounded-full text-slate-600" id="contadorTeoria">0 de 40 respondidas</span>
+      </div>
+
+      <div id="parteTeoria" class="bg-white border border-t-0 border-slate-200 rounded-b-md divide-y divide-slate-100"></div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- PARTE II : SUBNETTING                                       -->
+    <!-- ============================================================ -->
+    <section class="page-break">
+      <div class="bg-white border border-slate-200 rounded-md">
+        <div class="px-5 py-3 border-b border-slate-200 flex items-center justify-between">
+          <h2 class="text-lg font-bold text-slate-800">Parte II · Caso de subnetting <span class="text-sm font-normal text-slate-500">(10 pts)</span></h2>
+        </div>
+        <div class="p-5 sm:p-6 space-y-4 text-sm">
+
+          <div class="bg-ucr-50 border border-ucr-200 rounded p-4">
+            <p class="font-semibold text-ucr-900">Enunciado</p>
+            <p class="mt-1">Una PYME con cinco sucursales (A, B, C, D y E) recibe el bloque <strong class="mono">200.10.20.0/24</strong> y necesita dividirlo en <strong>5 subredes del mismo tamaño</strong>, una por sucursal. Con base en este escenario responda lo solicitado. Muestre cálculo donde aplique.</p>
+          </div>
+
+          <div class="space-y-3" id="subnetting">
+            <!-- dinamico -->
+          </div>
+
+          <button id="btnCalcularPII" class="no-print bg-ucr-700 hover:bg-ucr-600 text-white text-sm font-semibold px-5 py-2 rounded">
+            Calcular puntaje de esta parte
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- PARTE III : PRACTICOS                                       -->
+    <!-- ============================================================ -->
+    <section class="page-break">
+      <div class="rounded-md bg-white border border-slate-200">
+        <div class="px-5 py-3 border-b border-slate-200">
+          <h2 class="text-lg font-bold text-slate-800">Parte III · Casos prácticos en Packet Tracer <span class="text-sm font-normal text-slate-500">(40 pts)</span></h2>
+          <p class="text-sm text-slate-600 mt-1">Para cada caso, construya la topología en Cisco Packet Tracer y escriba la configuración CLI completa. El docente revisará la topología en el laboratorio.</p>
+        </div>
+        <div class="p-5 sm:p-6 space-y-8" id="practicos"><!-- dinamico --></div>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- CLAVE / RUBRICA ( docente )                                 -->
+    <!-- ============================================================ -->
+    <section id="clave" class="hidden print-block">
+      <div class="bg-amber-50 border border-amber-300 rounded-md p-5">
+        <h2 class="text-lg font-bold text-slate-800">Clave del profesor · Rúbrica</h2>
+        <p class="text-sm text-slate-600 mt-1">Respuestas esperadas y desglose de puntaje. <strong class="text-amber-800 hidden print-block">Este bloque NO se imprime para el estudiantado.</strong></p>
+      </div>
+
+      <div class="mt-4 bg-white border border-slate-200 rounded-md p-5 sm:p-6 space-y-6"
+           id="claveContenido"><!-- dinamico --></div>
+    </section>
+
+  </main>
+
+  <!-- ===================== MODAL PIN ===================== -->
+  <div id="modalPin" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50 no-print">
+    <div class="bg-white rounded-md shadow-xl w-[22rem] max-w-[90%] p-6">
+      <h3 class="font-bold text-lg text-slate-800">Clave del profesor</h3>
+      <p class="text-sm text-slate-600 mt-1">Ingrese el PIN de 4 dígitos para revelar respuestas y rúbrica.</p>
+      <input id="pinInput" type="password" inputmode="numeric" maxlength="4"
+             class="mt-4 w-full border border-slate-300 rounded px-3 py-3 text-center text-2xl mono tracking-[0.5em] focus:outline-none focus:ring-2 focus:ring-ucr-500">
+      <p id="pinError" class="text-red-600 text-sm mt-2 hidden">PIN incorrecto.</p>
+      <div class="flex justify-end gap-3 mt-5">
+        <button id="btnPinCancelar" class="px-4 py-2 rounded text-sm font-semibold text-slate-600 hover:bg-slate-100">Cancelar</button>
+        <button id="btnPinOk" class="px-4 py-2 rounded text-sm font-semibold text-white bg-ucr-700 hover:bg-ucr-600">Desbloquear</button>
+      </div>
+    </div>
+  </div>
+
+<script>
+/* ================================================================
+   DATOS DEL EXAMEN
+================================================================ */
+const PIN_PROFESOR = '0101';
+
+// ---- Preguntas de teoría ----------------------------------------
+const TEORIA = [
+  // --- Semana 1: Modelo OSI ---
+  { tema:'Semana 1 · Modelos de referencia', pts:1, tipo:'mc', texto:'¿Qué organización desarrolló el modelo OSI para resolver la falta de compatibilidad entre fabricantes?', opciones:['IEEE','ISO (Organización Internacional de Normalización)','IETF','ANSI'], resp:1, just:'La ISO (International Organization for Standardization).' },
+  { tema:'Semana 1 · Modelos de referencia', pts:1, tipo:'mc', texto:'¿Cómo se denomina la Unidad de Datos (PDU) en la Capa 3 del modelo OSI?', opciones:['Trama','Segmento','Paquete','Bit'], resp:2, just:'En la Capa 3 (Red) la PDU se llama Paquete.' },
+  { tema:'Semana 1 · Modelos de referencia', pts:1, tipo:'mc', texto:'La Capa 4 (Transporte) es responsable de:', opciones:['El direccionamiento lógico global','La entrega extremo a extremo, el control de flujo y la multiplexación','La transmisión de señales eléctricas','La traducción de formatos y cifrado'], resp:1, just:'La Capa 4 garantiza entrega extremo a extremo mediante segmentos.' },
+  { tema:'Semana 1 · Modelos de referencia', pts:1, tipo:'mc', texto:'¿Cuál es la principal diferencia funcional entre TCP y UDP?', opciones:['TCP es más rápido y UDP es más confiable','TCP es confiable mediante confirmaciones; UDP es veloz y se usa para streaming','TCP no usa puertos y UDP sí','Son idénticos, solo cambia el puerto'], resp:1, just:'TCP confirma (3-Way Handshake); UDP prioriza velocidad sin confirmación.' },
+  { tema:'Semana 1 · Modelos de referencia', pts:1, tipo:'mc', texto:'¿Cuál es el dispositivo característico que opera en la Capa 3?', opciones:['Switch','Hub','Router','NIC'], resp:2, just:'El router opera en la Capa 3 (Red).' },
+  { tema:'Semana 1 · Modelos de referencia', pts:1, tipo:'mc', texto:'Ordene los tres pasos del saludo de tres vías (3-Way Handshake) de TCP:', opciones:['ACK, SYN, SYN-ACK','SYN, SYN-ACK, ACK','SYN-ACK, ACK, SYN','SYN, ACK, SYN-ACK'], resp:1, just:'El orden correcto es SYN → SYN-ACK → ACK.' },
+  { tema:'Semana 1 · Modelos de referencia', pts:1, tipo:'mc', texto:'En la analogía postal, ¿qué componente de red equivale al número de serie (fábrica) de una casa?', opciones:['La dirección IP','La dirección MAC','El número de puerto','El nombre de dominio'], resp:1, just:'La MAC viene grabada de fábrica (Capa 2); la IP cambia según la red (Capa 3).' },
+  { tema:'Semana 1 · Modelos de referencia', pts:1, tipo:'mc', texto:'¿En qué capa reside un problema cuando la luz del puerto RJ-45 de una PC no enciende?', opciones:['Capa 7 (Aplicación)','Capa 3 (Red)','Capa 2 (Enlace)','Capa 1 (Física)'], resp:3, just:'Falta de enlace físico = Capa 1.' },
+  { tema:'Semana 1 · Modelos de referencia', pts:1, tipo:'mc', texto:'El envenenamiento de tablas para redirigir tráfico (ARP Spoofing) ocurre en la Capa:', opciones:['1 (Física)','2 (Enlace de Datos)','4 (Transporte)','7 (Aplicación)'], resp:1, just:'ARP opera en la Capa 2.' },
+  { tema:'Semana 1 · Modelos de referencia', pts:1, tipo:'mc', texto:'¿Por qué se dice que el modelo TCP/IP es la pila implementada en Internet y OSI el estándar de referencia?', opciones:['Porque TCP/IP se usa en producción mientras OSI se usa como marco teórico','Porque OSI no funciona','Porque TCP/IP tiene 7 capas','Porque OSI solo sirve para cableado'], resp:0, just:'TCP/IP es implementado; OSI es el modelo conceptual universal.' },
+
+  // --- Semanas 2-3: Direccionamiento IPv4 ---
+  { tema:'Semana 2-3 · Direccionamiento IPv4', pts:1, tipo:'mc', texto:'¿Cuántos bits tiene una dirección IPv4?', opciones:['32 bits en 4 octetos','64 bits en 8 octetos','128 bits en 16 octetos','16 bits en 2 octetos'], resp:0, just:'IPv4 = 32 bits, expresados en 4 octetos (formato decimal punteado).' },
+  { tema:'Semana 2-3 · Direccionamiento IPv4', pts:1, tipo:'mc', texto:'¿Qué máscara de subred corresponde a un /24?', opciones:['255.0.0.0','255.255.0.0','255.255.255.0','255.255.255.255'], resp:2, just:'/24 = 24 bits en red = 255.255.255.0.' },
+  { tema:'Semana 2-3 · Direccionamiento IPv4', pts:1, tipo:'mc', texto:'¿Cuál de las siguientes es una dirección IPv4 privada (Clase C)?', opciones:['8.8.8.8','192.168.1.10','200.10.20.1','172.32.10.5'], resp:1, just:'El rango privado Clase C es 192.168.0.0 – 192.168.255.255.' },
+  { tema:'Semana 2-3 · Direccionamiento IPv6', pts:1, tipo:'mc', texto:'¿Cuántos bits tiene una dirección IPv6?', opciones:['32 bits','64 bits','128 bits','256 bits'], resp:2, just:'IPv6 = 128 bits, escritos como 8 grupos hexadecimales.' },
+  { tema:'Semana 2-3 · Direccionamiento IPv6', pts:1, tipo:'mc', texto:'La dirección ::1 en IPv6 corresponde a:', opciones:['Broadcast','Loopback (la propia máquina)','Dirección de red','Multicast'], resp:1, just:'::1 es el loopback IPv6, equivalente a 127.0.0.1 en IPv4.' },
+
+  // --- Semana 4: Subnetting / VLSM ---
+  { tema:'Semana 4 · Subnetting y VLSM', pts:1, tipo:'mc', texto:'¿Cuál es el propósito del VLSM (máscara de subred de longitud variable)?', opciones:['Usar la misma máscara en todas las subredes','Aprovechar mejor las direcciones asignando a cada subred solo los hosts que necesita','Evitar el uso de routers','Aumentar la cantidad de direcciones públicas'], resp:1, just:'VLSM permite máscaras distintas según la cantidad real de hosts por subred.' },
+  { tema:'Semana 4 · Subnetting y VLSM', pts:1, tipo:'mc', texto:'Una subred /30 permite __ direcciones usable(s) para hosts:', opciones:['2 hosts útiles','30 hosts útiles','62 hosts útiles','254 hosts útiles'], resp:0, just:'/30 deja 2 bits para hosts: 2²−2 = 2 útiles. Típico de enlaces punto a punto.' },
+  { tema:'Semana 4 · Subnetting y VLSM', pts:1, tipo:'mc', texto:'Si aplica máscara /27 a 192.168.5.0, ¿cuántos hosts útiles hay por subred?', opciones:['30','32','62','126'], resp:0, just:'/27 deja 5 bits: 2⁵−2 = 30 hosts útiles.' },
+
+  // --- Semana 5: Internet/DNS ---
+  { tema:'Semana 5 · Internet y DNS', pts:1, tipo:'mc', texto:'En DNS, el registro A se usa para:', opciones:['Asociar un nombre de dominio con una dirección IPv4','Enviar correo electrónico','Definir el servidor de autoridad SOA','Traducir IPv6 a MAC'], resp:0, just:'El registro A (Address) mapea un nombre a una dirección IPv4.' },
+  { tema:'Semana 5 · Internet y DNS', pts:1, tipo:'mc', texto:'¿Qué organización es la autoridad que administra el registro de dominios .cr en Costa Rica?', opciones:['ICANN','NIC Costa Rica (NIC-Internet)','IEEE','SUTEL'], resp:1, just:'NIC Costa Rica administra el registro de dominios .cr.' },
+
+  // --- Semana 6: Enrutamiento estático / tabla ARP ---
+  { tema:'Semana 6 · Enrutamiento (semana 6)', pts:2, tipo:'mc', texto:'¿Cuál es el comando de Cisco IOS para configurar una ruta estática?', opciones:['router static','ip route','ip add-route','route add'], resp:1, just:'ip route <red-destino> <máscara> <siguiente salto>.' },
+  { tema:'Semana 6 · Enrutamiento', pts:2, tipo:'mc', texto:'La tabla ARP mantiene la relación entre:', opciones:['Dirección IP y puerto','Nombre de dominio e IP','Dirección IP y dirección MAC','Dirección MAC y VLAN'], resp:2, just:'ARP resuelve IP → MAC dentro de la misma red.' },
+  { tema:'Semana 6 · Enrutamiento', pts:2, tipo:'mc', texto:'Ciudad habilitó una segunda puerta en un router. El estudiante guardó los cambios del R1 con "wr" pero al cerrar y abrir Packet Tracer la configuración se perdió. ¿Cómo evita esto en una simulación?', opciones:['Configurando de nuevo cada vez','Habilitando el guardado automático del archivo .pkt en Packet Tracer','No se puede guardar config en Packet Tracer','Usando "save config run"'], resp:1, just:'En Packet Tracer se guarda el archivo .pkt; la "wr" no persiste si no se guarda el archivo.' },
+
+  // --- Semana 7: Enrutamiento dinámico ---
+  { tema:'Semana 7 · Enrutamiento dinámico', pts:2, tipo:'mc', texto:'RIP es un protocolo de:', opciones:['Estado de enlace','Vector de distancia basado en conteo de saltos','Path-vector','Híbrido propietario de Cisco'], resp:1, just:'RIP usa vector de distancia; su métrica es el conteo de saltos (máx 15).' },
+  { tema:'Semana 7 · Enrutamiento dinámico', pts:2, tipo:'mc', texto:'El límite máximo de saltos de RIP es:', opciones:['15','16','31','255'], resp:0, just:'15 saltos válidos; 16 se considera red inalcanzable.' },
+  { tema:'Semana 7 · Enrutamiento dinámico', pts:2, tipo:'mc', texto:'OSPF calcula la ruta más corta usando el algoritmo:', opciones:['Bellman-Ford','DUAL','Dijkstra','Floyd-Warshall'], resp:2, just:'OSPF usa el algoritmo de Dijkstra (shortest path first).' },
+  { tema:'Semana 7 · Enrutamiento dinámico', pts:2, tipo:'mc', texto:'EIGRP es un protocolo:', opciones:['Estándar abierto de estado de enlace','Híbrido de vector de distancia, propietario de Cisco, que usa el algoritmo DUAL','Path-vector para Internet','De broadcast restringido sin métricas'], resp:1, just:'EIGRP es híbrido y propietario de Cisco; usa DUAL y métrica compuesta.' },
+  { tema:'Semana 7 · Enrutamiento dinámico', pts:2, tipo:'mc', texto:'BGP es el protocolo encargado de enrutar entre:', opciones:['Routers dentro de una misma LAN','Sistemas Autónomos (inter-ISP) a nivel de Internet','Un switch y una PC','Dos hosts en la misma subred'], resp:1, just:'BGP (Path-Vector) conecta Sistemas Autónomos; es el "pegamento" de Internet.' },
+  { tema:'Semana 7 · Enrutamiento dinámico', pts:2, tipo:'mc', texto:'El comando para ver la tabla de enrutamiento y confirmar que el enrutamiento dinámico aprendió rutas es:', opciones:['show ip interface brief','show ip route','show arp','debug ospf all'], resp:1, just:'show ip route muestra todas las rutas aprendidas (C, S, D, O, R...).' },
+  { tema:'Semana 7 · Enrutamiento dinámico', pts:2, tipo:'mc', texto:'Un estudiante configura OSPF con "network 192.168.1.0 0.0.0.255 area 0". La parte "0.0.0.255" es:', opciones:['La máscara de subred','El wildcard (máscara inversa) para incluir el rango','El área de enrutamiento','El ID del proceso'], resp:1, just:'En OSPF/RIP(con máscara) y EIGRP se usan wildcards; 0.0.0.255 = /24.' },
+  { tema:'Refuerzo · Conceptos base', pts:1, tipo:'mc', texto:'¿Qué es un octeto en una dirección IP?', opciones:['Un grupo de 8 bits','Un grupo de 4 bits','Un grupo de 16 bits','Un conjunto de 32 bits'], resp:0, just:'Un octeto son 8 bits. IPv4 tiene 4 octetos (32 bits totales).' },
+  { tema:'Refuerzo · Conceptos base', pts:1, tipo:'mc', texto:'Defina la diferencia entre una dirección IP pública y una privada.', opciones:['La pública es enrutable en Internet y única; la privada solo es válida dentro de la red local (RFC 1918)','La privada es pública pero más lenta','La pública se asigna por DHCP y la privada es fija','No existe diferencia, son sinónimos'], resp:0, just:'IP pública = única y enrutable en Internet. IP privada = RFC 1918 (10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16), solo interna.' },
+  { tema:'Refuerzo · Conceptos base', pts:1, tipo:'mc', texto:'¿Desde qué modo de IOS se configura un protocolo de enrutamiento como EIGRP?', opciones:['Desde el modo privilegiado (enable)','Desde el modo de configuración global con "router eigrp 100"','Desde la interfaz Gig0/0','Desde la consola de una PC'], resp:1, just:'Se entra en modo global (Router(config)#) y se ejecuta "router eigrp <AS>".' },
+  { tema:'Refuerzo · Conceptos base', pts:1, tipo:'mc', texto:'Ordene las capas del modelo OSI de la más baja a la más alta:', opciones:['Física, Enlace de Datos, Red, Transporte, Sesión, Presentación, Aplicación','Física, Red, Enlace de Datos, Transporte, Sesión, Presentación, Aplicación','Aplicación, Presentación, Sesión, Transporte, Red, Enlace de Datos, Física','Enlace de Datos, Física, Red, Transporte, Aplicación, Sesión, Presentación'], resp:0, just:'El orden correcto es 1-Física → 7-Aplicación: Física, Enlace, Red, Transporte, Sesión, Presentación, Aplicación.' },
+  { tema:'Refuerzo · Conceptos base', pts:1, tipo:'mc', texto:'¿Qué significa la máscara /26 en una dirección IP?', opciones:['Que los primeros 26 bits son de red y quedan 6 bits para hosts (62 hosts útiles por subred)','Que la red tiene 26 hosts posibles','Que hay 26 subredes distintas','Que se usa en IPv6'], resp:0, just:'/26 = 26 bits de red, 6 de host → 2⁶−2 = 62 hosts útiles por subred.' },
+  { tema:'Refuerzo · Conceptos base', pts:1, tipo:'mc', texto:'¿Cuál es el rango del primer octeto de una dirección IPv4 de Clase B?', opciones:['1 – 126','128 – 191','192 – 223','224 – 239'], resp:1, just:'Clase A: 1-126, Clase B: 128-191, Clase C: 192-223, Clase D (multicast): 224-239.' },
+  { tema:'Refuerzo · Conceptos base', pts:1, tipo:'mc', texto:'¿Cómo se calcula cuántos bits hay que "pedir prestados" al octeto de host para crear subredes?', opciones:['Se usa 2ⁿ ≥ número de subredes necesarias y se despeja el menor n','Se suman 8 bits por cada subred','Se divide el total de hosts entre la máscara','Se resta 256 al último octeto'], resp:0, just:'Se busca el menor n tal que 2ⁿ sea mayor o igual a la cantidad de subredes; ese n son los bits prestados.' },
+  { tema:'Refuerzo · Conceptos base', pts:1, tipo:'mc', texto:'¿Qué función cumple el gateway (puerta de enlace) en una red?', opciones:['Permite que un host salga de su red local hacia otras redes','Asigna direcciones IP dinámicas','Resuelve nombres de dominio','Convierte IPv4 en IPv6'], resp:0, just:'El gateway es la dirección IP del router de salida; sin él, el host solo se comunica dentro de su propia subred.' },
+  { tema:'Refuerzo · Conceptos base', pts:1, tipo:'mc', texto:'¿Qué es el DNS y para qué sirve?', opciones:['Un sistema que asigna direcciones IP dinámicas','Un servidor que traduce nombres de dominio a direcciones IP','Un protocolo de enrutamiento','Un tipo de cableado estructurado'], resp:1, just:'El DNS (Domain Name System) traduce nombres legibles (ej. google.com) a direcciones IP, en la Capa de Aplicación.' },
+  { tema:'Refuerzo · Conceptos base', pts:1, tipo:'mc', texto:'En subnetting, ¿cómo se calcula el "salto" o incremento entre una subred y la siguiente?', opciones:['Se resta al 256 el valor del último octeto de la máscara (ej. /27 → 256−224 = 32)','Se multiplica la cantidad de hosts por 2','Se cuenta la cantidad de routers','El salto siempre es 4'], resp:0, just:'El incremento = 256 − último octeto de la máscara. Ej. /27 (255.255.255.224) → salto de 32 direcciones por subred.' }
+];
+
+// ---- Caso de subnetting ------------------------------------------
+const SUBNET = [
+  { id:'a', pts:2, texto:'¿Cuántos bits se deben prestar de la porción de host para crear las 5 subredes?', respuesta:'3' },
+  { id:'b', pts:2, texto:'Indique la nueva máscara de subred (notación /X)', respuesta:'/27' },
+  { id:'c', pts:2, texto:'¿Cuántos hosts útiles hay por subred?', respuesta:'30' },
+  { id:'d', pts:1, texto:'Dirección de la subred 1 (sucursal A):', respuesta:'200.10.20.0' },
+  { id:'e', pts:1, texto:'Rango de hosts de la subred 1:', respuesta:'200.10.20.1 a 200.10.20.30' },
+  { id:'f', pts:1, texto:'Dirección de broadcast de la subred 1:', respuesta:'200.10.20.31' },
+  { id:'g', pts:1, texto:'Dirección de la subred 2 (sucursal B):', respuesta:'200.10.20.32' }
+];
+
+// ---- Casos prácticos ---------------------------------------------
+const PRACTICOS = [
+  {
+    titulo:'Caso 1 · RIP (RIP v2)', pts:13, protocolo:'RIP v2',
+    topologia:`[PC1] ── G0/0     R1     G0/1 ── G0/0     R2     G0/1 ── G0/0     R3     G0/1 ── [PC2]
+192.168.1.10/24     .1    10.0.0.1/30──10.0.0.2/30  10.0.1.1/30──10.0.1.2/30   .1   192.168.3.10/24`,
+    items:[
+      { pts:3, q:'Active RIP versión 2 en los tres routers. Escriba los comandos (desde el modo de configuración global).', r:'conf t → router rip → version 2' },
+      { pts:4, q:'En R1 declare las redes que RIP debe anunciar (LAN propia y enlace), con sus wildcards.', r:'R1: network 192.168.1.0 y network 10.0.0.0 0.0.0.3' },
+      { pts:2, q:'Comando para verificar las rutas RIP aprendidas en R1.', r:'show ip route rip' },
+      { pts:4, q:'¿Qué comando evita que RIP resuma automáticamente y por qué es necesario aquí? Razone con métrica.', r:'"no auto-summary". Con rutas discontiguas (192.168.1.0 / 192.168.3.0 separadas por 10.x.x.x) la sumarización automática puede producir rutas incorrectas/no anunciadas.' }
+    ]
+  },
+  {
+    titulo:'Caso 2 · OSPF', pts:13, protocolo:'OSPF (área única)',
+    topologia:`[PC1] ── G0/0     R1     G0/1 ── G0/0     R2     G0/1 ── G0/0     R3     G0/1 ── [PC2]
+192.168.1.10/24     .1    10.0.0.1/30──10.0.0.2/30  10.0.1.1/30──10.0.1.2/30   .1   192.168.3.10/24`,
+    items:[
+      { pts:2, q:'Inicie OSPF en los routers (indicar también el ID de proceso).', r:'router ospf 1' },
+      { pts:4, q:'En R1 declare sus redes en OSPF dentro del área 0 (con wildcards).', r:'network 192.168.1.0 0.0.0.255 area 0 y network 10.0.0.0 0.0.0.3 area 0' },
+      { pts:3, q:'Comandos para verificar el vecino OSPF y las rutas aprendidas.', r:'show ip ospf neighbor y show ip route ospf' },
+      { pts:4, q:'Explique brevemente la métrica de OSPF y qué algoritmo emplea.', r:'Costo = 10⁸/ancho de banda (menor mejor); algoritmo de Dijkstra (SPF).' }
+    ]
+  },
+  {
+    titulo:'Caso 3 · EIGRP', pts:14, protocolo:'EIGRP',
+    topologia:`[PC1] ── G0/0     R1     G0/1 ── G0/0     R2     G0/1 ── G0/0     R3     G0/1 ── [PC2]
+192.168.1.10/24     .1    10.0.0.1/30──10.0.0.2/30  10.0.1.1/30──10.0.1.2/30   .1   192.168.3.10/24`,
+    items:[
+      { pts:2, q:'Inicie EIGRP con número de sistema autónomo 100.', r:'router eigrp 100' },
+      { pts:4, q:'En R1 declare sus redes con sus wildcards.', r:'network 192.168.1.0 y network 10.0.0.0 0.0.0.3' },
+      { pts:3, q:'Comandos para verificar los vecinos EIGRP y las rutas aprendidas.', r:'show ip eigrp neighbors y show ip route eigrp' },
+      { pts:5, q:'Mencione la métrica compuesta de EIGRP y el algoritmo que utiliza. ¿Qué ventaja ofrece frente a RIP en convergencia?', r:'Métrica compuesta: ancho de banda + retardo (+ carga + confiabilidad). Algoritmo DUAL. Convergencia instantánea con respaldos (Feasible Successor).' }
+    ]
+  }
+];
+
+/* ================================================================
+   RENDER
+================================================================ */
+function esc(s){ const d=document.createElement('div'); d.textContent=s; return d.innerHTML; }
+
+// ---- Parte I -----------------------------------------------------
+const contTeoria = document.getElementById('contadorTeoria');
+const teoriaBox = document.getElementById('parteTeoria');
+let respuestaTeoria = {};
+
+function renderTeoria(){
+  let acc = ''; let actualTema='';
+  TEORIA.forEach((p, idx)=>{
+    const tema = p.tema;
+    const num = idx + 1;
+    let html = '';
+    html += `<div class="p-5 sm:p-6" data-teoria="${idx}">`;
+    if (tema !== actualTema){
+      html += `<p class="text-xs font-bold uppercase tracking-wide text-ucr-700 mb-3 border-b border-ucr-100 pb-2">${esc(tema)}</p>`;
+      actualTema = tema;
+    }
+    html += `<div class="flex items-start gap-3">
+      <span class="shrink-0 w-8 h-8 rounded-full bg-slate-100 text-slate-700 flex items-center justify-center text-sm font-bold">${num}</span>
+      <div class="min-w-0 flex-1">
+        <p class="text-sm font-medium text-slate-800">${p.pts} pts · ${esc(p.texto)}</p>`;
+
+    if (p.tipo === 'mc'){
+      html += `<div class="mt-3 space-y-2" role="radiogroup">`;
+      p.opciones.forEach((op, oi)=>{
+        html += `<label class="flex items-start gap-3 p-2 rounded hover:bg-slate-50 cursor-pointer border border-slate-100">
+          <input type="radio" name="t${idx}" value="${oi}" class="mt-0.5 w-4 h-4 text-ucr-600 focus:ring-ucr-500"
+                 data-theory="${idx}" data-opt="${oi}">
+          <span class="text-sm text-slate-700">${opcionesLetra(oi)} · ${esc(op)}</span>
+        </label>`;
+      });
+      html += `</div>`;
+    } else {
+      html += `<input type="text" data-theory="${idx}" placeholder="Escriba su respuesta"
+        class="mt-3 w-full border border-slate-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ucr-500">`;
+    }
+    // indicador (solo visible para docente con PIN)
+    html += `<p class="hidden clave-resp mt-3 text-sm text-green-700 bg-green-50 border border-green-200 rounded px-3 py-2">
+        <strong>Respuesta:</strong> ${esc(p.just)}</p>`;
+
+    html += `</div></div></div>`;
+    acc += html;
+  });
+  teoriaBox.innerHTML = acc;
+}
+function opcionesLetra(i){ return ['A','B','C','D','E','F'][i] || (i+1); }
+
+// event delegation para comunicar el avance
+teoriaBox.addEventListener('change', e=>{
+  const el = e.target;
+  if (el.hasAttribute('data-theory')){
+    const idx = el.getAttribute('data-theory');
+    if (el.type === 'radio'){
+      respuestaTeoria[idx] = el.value;
+    } else {
+      respuestaTeoria[idx] = el.value.trim();
+    }
+    actualizarContador();
+  }
+});
+function actualizarContador(){
+  const hechas = Object.keys(respuestaTeoria).length;
+  contTeoria.textContent = `${hechas} de ${TEORIA.length} respondidas`;
+}
+
+// ---- Parte II ----------------------------------------------------
+const subnetBox = document.getElementById('subnetting');
+function renderSubnet(){
+  let acc='';
+  SUBNET.forEach((s, i)=>{
+    acc += `<div class="bg-slate-50 border border-slate-200 rounded p-3 sm:p-4 flex flex-col sm:flex-row sm:items-center gap-3">
+      <div class="flex-1">
+        <p class="text-sm font-semibold text-slate-700">${s.texto} <span class="text-slate-400 font-normal">(${s.pts} pts)</span></p>
+        <p class="hidden clave-resp text-xs text-green-700 mt-1"><strong>Esperado:</strong> ${esc(s.respuesta)}</p>
+      </div>
+      <input type="text" data-subnet="${i}" placeholder="Respuesta"
+        class="w-full sm:w-64 border border-slate-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ucr-500">
+    </div>`;
+  });
+  subnetBox.innerHTML = acc;
+}
+
+// ---- Parte III ---------------------------------------------------
+const practicosBox = document.getElementById('practicos');
+function renderPracticos(){
+  let acc='';
+  PRACTICOS.forEach((c, ci)=>{
+    acc += `<div class="border border-slate-200 rounded-md overflow-hidden">
+      <div class="bg-ucr-50 px-5 py-3 flex flex-wrap items-center justify-between gap-2">
+        <h3 class="font-bold text-ucr-800">${esc(c.titulo)} <span class="text-sm font-normal text-slate-500">(${c.pts} pts)</span></h3>
+        <span class="text-xs bg-ucr-200 text-ucr-900 px-2 py-1 rounded font-semibold">${esc(c.protocolo)}</span>
+      </div>
+      <div class="p-5">
+        <pre class="mono bg-slate-900 text-green-300 text-xs sm:text-sm rounded p-4 overflow-x-auto">${esc(c.topologia)}</pre>
+        <div class="mt-4 space-y-4">`;
+        c.items.forEach((it, ii)=>{
+          acc += `<div>
+            <p class="text-sm font-semibold text-slate-800">${it.pts} pts · ${esc(it.q)}</p>
+            <textarea rows="2" data-caso="${ci}" data-item="${ii}" placeholder="Escriba los comandos / explicación"
+              class="mt-2 w-full border border-slate-300 rounded px-3 py-2 text-sm mono focus:outline-none focus:ring-2 focus:ring-ucr-500"></textarea>
+            <p class="hidden clave-resp mt-2 text-xs text-green-700 bg-green-50 border border-green-200 rounded px-3 py-2"><strong>Esperado:</strong> ${esc(it.r)}</p>
+          </div>`;
+        });
+        acc += `</div>
+      </div>
+    </div>`;
+  });
+  practicosBox.innerHTML = acc;
+}
+
+/* ================================================================
+   PUNTAJES Y CALCULO
+================================================================ */
+let desbloqueado = false;
+
+// Normalización por defecto de una respuesta escrita
+function normalizar(s){
+  return (s||'').toString().trim().toLowerCase()
+    .replace(/\s+/g,' ')
+    .replace(/[.,;:()]/g,'')
+    .replace(/^\/+/,'');
+}
+
+function esCorrectaTexto(esperado, valor){
+  if (!valor) return false;
+  const e = normalizar(esperado);
+  const v = normalizar(valor);
+  if (e === v) return true;
+  return e.split(' ').every(pal => v.includes(pal));
+}
+
+function calcularPI(){
+  let ptsI = 0;
+  const totalI = TEORIA.reduce((a,p)=>a+p.pts,0);
+  TEORIA.forEach((p, i)=>{
+    const sel = document.querySelector(`input[name="t${i}"]:checked`);
+    const txt = document.querySelector(`input[data-theory="${i}"][type="text"]`);
+    let ok=false;
+    if (p.tipo==='mc'){ ok = !!(sel && parseInt(sel.value)===p.resp); }
+    else { ok = esCorrectaTexto(p.resp, txt && txt.value); }
+    const grupo = document.querySelector(`div[data-teoria="${i}"]`);
+    if (sel){ const lb = sel.closest('label'); lb.classList.remove('bg-red-50'); lb.className = ok ? lb.className.replace(/\s*bg-\w+-50/g,'') + ' bg-green-50' : lb.className.replace(/\s*bg-\w+-50/g,'') + ' bg-red-50'; }
+    if (ok) ptsI += p.pts;
+  });
+  return { pts:ptsI, total:totalI };
+}
+
+function calcularPII(){
+  let ptsII = 0;
+  const totalII = SUBNET.reduce((a,s)=>a+s.pts,0);
+  SUBNET.forEach((s, i)=>{
+    const inp = document.querySelector(`input[data-subnet="${i}"]`);
+    const ok = inp && esCorrectaTexto(s.respuesta, inp.value);
+    if (ok) ptsII += s.pts;
+    if (inp) inp.classList.toggle('bg-green-50', !!ok);
+  });
+  return { pts:ptsII, total:totalII };
+}
+
+function calcularPIII(){
+  let ptsIII = 0;
+  const totalIII = PRACTICOS.reduce((a,c)=>a+c.pts,0);
+  PRACTICOS.forEach((c, ci)=>{
+    c.items.forEach((it, ii)=>{
+      const ta = document.querySelector(`textarea[data-caso="${ci}"][data-item="${ii}"]`);
+      const ok = ta && esCorrectaTexto(it.r, ta.value);
+      if (ok){ ptsIII += it.pts; ta.classList.add('bg-green-50'); }
+      else if (ta){ ta.classList.remove('bg-green-50'); }
+    });
+  });
+  return { pts:ptsIII, total:totalIII };
+}
+
+function mostrarResultado() {
+  const rI = calcularPI();
+  const rII = calcularPII();
+  const rIII = calcularPIII();
+  const pts = rI.pts + rII.pts + rIII.pts;
+
+  let html = `<div class="print-block bg-ucr-900 text-white rounded-md p-5 mt-6">
+    <div class="flex items-center justify-between flex-wrap gap-3">
+      <h3 class="font-bold text-lg">Resumen de calificación</h3>
+      <span class="text-2xl font-bold">${pts} / 100 pts</span>
+    </div>
+    <div class="mt-3 grid grid-cols-3 gap-3 text-sm">
+      <div class="text-center bg-ucr-800 rounded p-3"><p class="text-ucr-200 text-xs uppercase">Teoría</p><p class="font-bold">${rI.pts} / ${rI.total}</p></div>
+      <div class="text-center bg-ucr-800 rounded p-3"><p class="text-ucr-200 text-xs uppercase">Subnetting</p><p class="font-bold">${rII.pts} / ${rII.total}</p></div>
+      <div class="text-center bg-ucr-800 rounded p-3"><p class="text-ucr-200 text-xs uppercase">Prácticos</p><p class="font-bold">${rIII.pts} / ${rIII.total}</p></div>
+    </div>
+  </div>`;
+
+  const zona = document.getElementById('zonaResultado');
+  if (!zona){ const d = document.createElement('div'); d.id='zonaResultado'; d.innerHTML = html; main.appendChild(d); }
+  else { zona.innerHTML = html; }
+}
+
+/* ================================================================
+   CLAVE DEL PROFESOR (PIN)
+================================================================ */
+function renderClave(){
+  let acc = '<h3 class="font-bold text-ucr-800">Parte I · Respuestas de teoría</h3><table class="w-full text-sm"><thead><tr><th class="text-left py-2 border-b border-slate-200">#</th><th class="text-left py-2 border-b border-slate-200">Respuesta esperada</th><th class="text-left py-2 border-b border-slate-200">Pts</th></tr></thead><tbody>';
+  TEORIA.forEach((p,i)=>{
+    const rta = p.tipo==='mc' ? opcionesLetra(p.resp)+'). '+p.opciones[p.resp] : p.resp;
+    acc += `<tr><td class="py-1.5 pr-3">${i+1}</td><td class="py-1.5">${esc(rta)}</td><td class="py-1.5">${p.pts}</td></tr>`;
+  });
+  acc += '</tbody></table>';
+
+  acc += '<h3 class="font-bold text-ucr-800 mt-8">Parte II · Subnetting</h3><table class="w-full text-sm"><tbody>';
+  SUBNET.forEach(s=>{ acc += `<tr><td class="py-1.5 pr-3">${esc(s.texto)}</td><td class="py-1.5 font-semibold">${esc(s.respuesta)}</td><td class="py-1.5">${s.pts} pts</td></tr>`; });
+  acc += '</tbody></table>';
+
+  acc += '<h3 class="font-bold text-ucr-800 mt-8">Parte III · Rúbrica de prácticos</h3>';
+  PRACTICOS.forEach(c=>{
+    acc += `<div class="mt-4"><p class="font-semibold text-slate-700">${esc(c.titulo)} — ${c.pts} pts</p><ul class="mt-1 text-sm list-disc pl-5 space-y-1">`;
+    c.items.forEach(it=>{
+      acc += `<li><strong>${it.pts} pts</strong> · ${esc(it.r)}</li>`;
+    });
+    acc += '</ul></div>';
+  });
+
+  document.getElementById('claveContenido').innerHTML = acc;
+}
+
+/* ================================================================
+   EVENTOS
+================================================================ */
+// Modal PIN
+const modal = document.getElementById('modalPin');
+document.getElementById('btnProfesor').addEventListener('click', ()=> modal.classList.remove('hidden'));
+document.getElementById('btnPinCancelar').addEventListener('click', ()=>{ modal.classList.add('hidden'); document.getElementById('pinError').classList.add('hidden'); document.getElementById('pinInput').value=''; });
+document.getElementById('btnPinOk').addEventListener('click', ()=>{
+  const val = document.getElementById('pinInput').value.trim();
+  if (val === PIN_PROFESOR){
+    desbloqueado = true;
+    modal.classList.add('hidden');
+    document.getElementById('pinError').classList.add('hidden');
+    document.getElementById('pinInput').value='';
+    document.getElementById('clave').classList.remove('hidden');
+    document.querySelectorAll('.clave-resp').forEach(el=>el.classList.remove('hidden'));
+    document.getElementById('clave').scrollIntoView({behavior:'smooth'});
+  } else {
+    document.getElementById('pinError').classList.remove('hidden');
+  }
+});
+document.getElementById('pinInput').addEventListener('keydown', e=>{ if (e.key==='Enter') document.getElementById('btnPinOk').click(); });
+
+// Imprimir
+document.getElementById('btnImprimir').addEventListener('click', ()=>{ mostrarResultado(); setTimeout(()=>window.print(), 150); });
+
+// Calcular Parte II
+document.getElementById('btnCalcularPII').addEventListener('click', ()=>{
+  const r = calcularPII();
+  const d = document.createElement('div');
+  d.className='print-block mt-3 text-sm font-semibold text-ucr-800 bg-ucr-50 border border-ucr-200 rounded px-4 py-2';
+  d.textContent = `Puntaje Parte II: ${r.pts} de ${r.total} pts`;
+  document.getElementById('subnetting').parentElement.appendChild(d);
+});
+
+/* ================================================================
+   GUARDADO DEL INTENTO (Supabase)
+=============================================================== */
+let supabaseClient = null;
+async function getSupabase(){
+  if (supabaseClient) return supabaseClient;
+  const { createClient } = await import('https://esm.sh/@supabase/supabase-js@2');
+  supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  return supabaseClient;
+}
+
+function muestraEstado(id, texto, tipo){
+  let el = document.getElementById(id);
+  if (!el){
+    el = document.createElement('div');
+    el.id = id;
+    document.querySelector('main').appendChild(el);
+  }
+  const base = 'mt-4 text-sm font-semibold rounded px-4 py-3 ';
+  el.className = base + (tipo==='ok' ? 'bg-green-50 border border-green-300 text-green-800'
+             : tipo==='err' ? 'bg-red-50 border border-red-300 text-red-800'
+             : 'bg-amber-50 border border-amber-300 text-amber-800');
+  el.textContent = texto;
+  el.scrollIntoView({behavior:'smooth', block:'center'});
+}
+
+async function guardarIntento(){
+  const nombre = (document.getElementById('nombre').value || '').trim();
+  const carnet = (document.getElementById('carnet').value || '').trim();
+  const grupo  = (document.getElementById('grupo').value || '').trim();
+
+  if (!nombre || !carnet){
+    muestraEstado('zonaEstado', 'Complete al menos nombre y carné para guardar su intento.', 'err');
+    return;
+  }
+
+  const rI = calcularPI();
+  const rII = calcularPII();
+  const rIII = calcularPIII();
+  const total = rI.pts + rII.pts + rIII.pts;
+  mostrarResultado();
+
+  if (SUPABASE_URL.startsWith('SUSTITUIR') || SUPABASE_ANON_KEY.startsWith('SUSTITUIR')){
+    muestraEstado('zonaEstado', 'Configuración de Supabase pendiente: el intento NO se guardó (solo se mostró su puntaje).', 'warn');
+    return;
+  }
+
+  try {
+    const supabase = await getSupabase();
+    const { error } = await supabase.from('intentos').insert({
+      nombre, carnet, grupo,
+      pts_teoria: rI.pts,
+      pts_subnet: rII.pts,
+      pts_practicos: rIII.pts,
+      pts_total: total
+    });
+    if (error) throw error;
+    muestraEstado('zonaEstado', `Intento guardado. Su puntaje: ${total} / 100 pts. Solo usted y su docente pueden ver este resultado.`, 'ok');
+  } catch (e) {
+    console.error(e);
+    muestraEstado('zonaEstado', 'No se pudo guardar el intento (sin conexión o error del servidor). Su puntaje local está arriba.', 'warn');
+  }
+}
+
+document.getElementById('btnRevisar').addEventListener('click', guardarIntento);
+
+/* ================================================================
+   INIT
+================================================================ */
+const main = document.querySelector('main');
+renderTeoria();
+renderSubnet();
+renderPracticos();
+renderClave();
+</script>
+</body>
+</html>

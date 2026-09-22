@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reportes · Examen I · IF0011 Redes</title>
+<script src="config.js"></script>
+<script src="tailwind.js"></script>
+<script>
+tailwind.config = {
+  theme: { extend: { colors: {
+    ucr: { 50:'#eff7fd', 100:'#d9edf9', 200:'#b9def4', 300:'#87c9ec', 400:'#4dace0', 500:'#2490ce', 600:'#1576b4', 700:'#125e92', 800:'#144f78', 900:'#164364' },
+    tinta: '#1e293b'
+  } } }
+}
+</script>
+<style>
+  body { font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+</style>
+</head>
+<body class="bg-slate-100 text-tinta leading-relaxed">
+
+<header class="bg-ucr-900 text-white shadow">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between gap-4">
+    <div>
+      <p class="text-xs sm:text-sm uppercase tracking-widest text-ucr-200">UCR · Sede del Caribe · Limón</p>
+      <h1 class="text-xl sm:text-2xl font-bold">Reportes · Examen I · IF0011 Redes</h1>
+      <p class="text-sm text-ucr-200">Quién practicó, cuántas veces y los puntos de cada intento</p>
+    </div>
+    <div id="userbar" class="hidden flex flex-col items-end gap-2 no-print">
+      <span id="quien" class="text-sm text-ucr-200"></span>
+      <button id="btnLogout" class="bg-white text-ucr-900 px-3 py-1.5 rounded text-sm font-semibold hover:bg-ucr-100">Salir</button>
+    </div>
+  </div>
+</header>
+
+<main class="max-w-6xl mx-auto px-4 sm:px-6 mt-6 pb-16 space-y-6">
+
+  <!-- ============ LOGIN ============ -->
+  <section id="panelLogin" class="max-w-md mx-auto">
+    <div class="bg-white border border-slate-200 rounded-md p-6">
+      <h2 class="text-lg font-bold text-slate-800">Ingreso del docente</h2>
+      <p class="text-sm text-slate-600 mt-1">Use el correo UCR registrado en Supabase Auth.</p>
+      <form id="formLogin" class="mt-4 space-y-4">
+        <div>
+          <label for="loginEmail" class="block text-sm font-semibold text-slate-700">Correo UCR</label>
+          <input id="loginEmail" type="email" autocomplete="username" required
+            class="mt-1 w-full border border-slate-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ucr-500">
+        </div>
+        <div>
+          <label for="loginPass" class="block text-sm font-semibold text-slate-700">Contraseña</label>
+          <input id="loginPass" type="password" autocomplete="current-password" required
+            class="mt-1 w-full border border-slate-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ucr-500">
+        </div>
+        <p id="loginError" class="hidden text-sm font-semibold text-red-700 bg-red-50 border border-red-300 rounded px-3 py-2"></p>
+        <button type="submit" class="w-full bg-ucr-700 hover:bg-ucr-600 text-white text-sm font-semibold px-4 py-2.5 rounded">
+          Iniciar sesión
+        </button>
+      </form>
+      <p class="text-xs text-slate-500 mt-4">
+        Si es la primera vez, cree su usuario en Supabase: <span class="mono">Authentication → Users → Add user</span>, con el mismo correo que definió en el archivo <span class="mono">schema.sql</span>.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============ DATOS (solo tras login) ============ -->
+  <section id="panelDatos" class="hidden space-y-6">
+
+    <div id="resumen" class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+      <div class="bg-white border border-slate-200 rounded-md p-5">
+        <p class="text-xs uppercase tracking-wide text-slate-500">Intentos totales</p>
+        <p id="statIntentos" class="text-3xl font-bold text-ucr-800 mt-1">—</p>
+      </div>
+      <div class="bg-white border border-slate-200 rounded-md p-5">
+        <p class="text-xs uppercase tracking-wide text-slate-500">Estudiantes (por carné)</p>
+        <p id="statEstudiantes" class="text-3xl font-bold text-ucr-800 mt-1">—</p>
+      </div>
+      <div class="bg-white border border-slate-200 rounded-md p-5">
+        <p class="text-xs uppercase tracking-wide text-slate-500">Promedio general</p>
+        <p id="statPromedio" class="text-3xl font-bold text-ucr-800 mt-1">—</p>
+      </div>
+      <div class="bg-white border border-slate-200 rounded-md p-5">
+        <p class="text-xs uppercase tracking-wide text-slate-500">Último intento</p>
+        <p id="statUltimo" class="text-3xl font-bold text-ucr-800 mt-1">—</p>
+      </div>
+    </div>
+
+    <div class="flex flex-wrap gap-3">
+      <button id="btnExportar" class="bg-ucr-700 hover:bg-ucr-600 text-white text-sm font-semibold px-4 py-2 rounded">Exportar CSV</button>
+      <button id="btnRecargar" class="bg-white border border-slate-300 text-slate-700 hover:bg-slate-50 text-sm font-semibold px-4 py-2 rounded">Recargar datos</button>
+    </div>
+
+    <section class="bg-white border border-slate-200 rounded-md overflow-hidden">
+      <div class="px-5 py-3 border-b border-slate-200">
+        <h2 class="font-bold text-slate-800">Resumen por estudiante</h2>
+        <p class="text-sm text-slate-500 mt-0.5">Agrupado por carné · basado en los intentos registrados</p>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead class="bg-slate-50 text-left text-xs uppercase tracking-wide text-slate-500">
+            <tr>
+              <th class="py-3 px-5">Carné</th>
+              <th class="py-3 px-5">Nombre</th>
+              <th class="py-3 px-5">Grupo</th>
+              <th class="py-3 px-5 text-center">Intentos</th>
+              <th class="py-3 px-5 text-center">Mejor</th>
+              <th class="py-3 px-5 text-center">Último</th>
+              <th class="py-3 px-5 text-center">Promedio</th>
+              <th class="py-3 px-5 text-right">Pendiente</th>
+            </tr>
+          </thead>
+          <tbody id="tablaResumen" class="divide-y divide-slate-100"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="bg-white border border-slate-200 rounded-md overflow-hidden">
+      <div class="px-5 py-3 border-b border-slate-200">
+        <h2 class="font-bold text-slate-800">Historial de intentos</h2>
+        <p class="text-sm text-slate-500 mt-0.5">Todos los intentos, del más reciente al más antiguo</p>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead class="bg-slate-50 text-left text-xs uppercase tracking-wide text-slate-500">
+            <tr>
+              <th class="py-3 px-5">Fecha y hora</th>
+              <th class="py-3 px-5">Nombre</th>
+              <th class="py-3 px-5">Carné</th>
+              <th class="py-3 px-5">Grupo</th>
+              <th class="py-3 px-5 text-center">Teoría /50</th>
+              <th class="py-3 px-5 text-center">Subnet /10</th>
+              <th class="py-3 px-5 text-center">Prácticos /40</th>
+              <th class="py-3 px-5 text-center">Total /100</th>
+            </tr>
+          </thead>
+          <tbody id="tablaHistorial" class="divide-y divide-slate-100"></tbody>
+        </table>
+      </div>
+      <p id="sinDatos" class="hidden px-5 py-8 text-center text-slate-500 text-sm">Todavía no hay intentos registrados.</p>
+    </section>
+
+  </section>
+
+</main>
+
+<script type="module">
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+
+const panelLogin = document.getElementById('panelLogin');
+const panelDatos = document.getElementById('panelDatos');
+const userbar = document.getElementById('userbar');
+const configOK = !(SUPABASE_URL.startsWith('SUSTITUIR') || SUPABASE_ANON_KEY.startsWith('SUSTITUIR'));
+const supabase = configOK ? createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
+
+function fmtFecha(iso){
+  if (!iso) return '';
+  const d = new Date(iso);
+  const z = n => String(n).padStart(2,'0');
+  return `${z(d.getDate())}/${z(d.getMonth()+1)}/${d.getFullYear()} ${z(d.getHours())}:${z(d.getMinutes())}`;
+}
+
+function desplegar(){
+  userbar.classList.remove('hidden');
+  panelLogin.classList.add('hidden');
+  panelDatos.classList.remove('hidden');
+}
+function ocultar(){
+  userbar.classList.add('hidden');
+  panelLogin.classList.remove('hidden');
+  panelDatos.classList.add('hidden');
+}
+
+async function confirmarSesion(){
+  if (!supabase) return;
+  const { data: { session } } = await supabase.auth.getSession();
+  if (session){
+    document.getElementById('quien').textContent = session.user.email;
+    desplegar();
+    cargarDatos();
+  }
+}
+
+if (!configOK){
+  const err = document.getElementById('loginError');
+  err.classList.remove('hidden');
+  err.textContent = 'Configuración pendiente: complete SUPABASE_URL y SUPABASE_ANON_KEY en config.js y ejecute schema.sql en Supabase.';
+  panelLogin.classList.remove('hidden');
+}
+
+document.getElementById('formLogin').addEventListener('submit', async e=>{
+  e.preventDefault();
+  if (!supabase){ return; }
+  const email = document.getElementById('loginEmail').value.trim();
+  const pass = document.getElementById('loginPass').value;
+  const { data, error } = await supabase.auth.signInWithPassword({ email, password: pass });
+  const errBox = document.getElementById('loginError');
+  if (error){
+    errBox.textContent = 'Correo o contraseña incorrectos.';
+    errBox.classList.remove('hidden');
+    return;
+  }
+  errBox.classList.add('hidden');
+  document.getElementById('quien').textContent = data.user.email;
+  desplegar();
+  cargarDatos();
+});
+
+document.getElementById('btnLogout').addEventListener('click', async ()=>{
+  if (!supabase) return;
+  await supabase.auth.signOut();
+  document.getElementById('loginPass').value = '';
+  ocultar();
+});
+
+async function cargarDatos(){
+  if (!supabase) return;
+  const { data: intentos, error } = await supabase
+    .from('intentos')
+    .select('id, created_at, nombre, carnet, grupo, pts_teoria, pts_subnet, pts_practicos, pts_total')
+    .order('created_at', { ascending: false });
+
+  if (error){
+    alert('Error al consultar los intentos: ' + error.message);
+    return;
+  }
+  if (!intentos || intentos.length === 0){
+    document.getElementById('tablaResumen').innerHTML = '';
+    document.getElementById('tablaHistorial').innerHTML = '';
+    document.getElementById('sinDatos').classList.remove('hidden');
+    ['statIntentos','statEstudiantes','statPromedio','statUltimo'].forEach(id=>{
+      document.getElementById(id).textContent = '0';
+    });
+    return;
+  }
+  document.getElementById('sinDatos').classList.add('hidden');
+
+  // Resumen global
+  document.getElementById('statIntentos').textContent = intentos.length;
+  document.getElementById('statEstudiantes').textContent = new Set(intentos.map(i=>i.carnet)).size;
+  document.getElementById('statPromedio').textContent = (intentos.reduce((a,i)=>a+i.pts_total,0)/intentos.length).toFixed(1);
+  document.getElementById('statUltimo').textContent = fmtFecha(intentos[0].created_at);
+
+  // Resumen por carné
+  const map = new Map();
+  intentos.forEach(i=>{
+    if (!map.has(i.carnet)) map.set(i.carnet, { nombre: i.nombre, grupo: i.grupo, lista:[] });
+    const e = map.get(i.carnet);
+    e.lista.push(i.pts_total);
+    e.nombre = i.nombre;
+    e.grupo = i.grupo || '';
+  });
+  const filas = [...map.entries()].map(([carnet, e])=>{
+    const mejor = Math.max(...e.lista);
+    const ultimo = e.lista[0];
+    const prom = e.lista.reduce((a,b)=>a+b,0)/e.lista.length;
+    return `<tr>
+      <td class="py-2.5 px-5 mono">${carnet}</td>
+      <td class="py-2.5 px-5">${e.nombre}</td>
+      <td class="py-2.5 px-5">${e.grupo || '—'}</td>
+      <td class="py-2.5 px-5 text-center font-semibold">${e.lista.length}</td>
+      <td class="py-2.5 px-5 text-center">${mejor}</td>
+      <td class="py-2.5 px-5 text-center">${ultimo}</td>
+      <td class="py-2.5 px-5 text-center">${prom.toFixed(1)}</td>
+      <td class="py-2.5 px-5 text-right text-slate-400">—</td>
+    </tr>`;
+  });
+  document.getElementById('tablaResumen').innerHTML = filas.join('');
+
+  // Historial completo
+  const hist = intentos.map(i=>`<tr>
+    <td class="py-2.5 px-5">${fmtFecha(i.created_at)}</td>
+    <td class="py-2.5 px-5">${i.nombre}</td>
+    <td class="py-2.5 px-5 mono">${i.carnet}</td>
+    <td class="py-2.5 px-5">${i.grupo || '—'}</td>
+    <td class="py-2.5 px-5 text-center">${i.pts_teoria}</td>
+    <td class="py-2.5 px-5 text-center">${i.pts_subnet}</td>
+    <td class="py-2.5 px-5 text-center">${i.pts_practicos}</td>
+    <td class="py-2.5 px-5 text-center font-bold text-ucr-800">${i.pts_total}</td>
+  </tr>`);
+  document.getElementById('tablaHistorial').innerHTML = hist.join('');
+}
+
+document.getElementById('btnRecargar').addEventListener('click', cargarDatos);
+
+document.getElementById('btnExportar').addEventListener('click', async () => {
+  if (!supabase) return;
+  const { data: intentos } = await supabase
+    .from('intentos')
+    .select('created_at, nombre, carnet, grupo, pts_teoria, pts_subnet, pts_practicos, pts_total')
+    .order('created_at', { ascending: true });
+  if (!intentos || intentos.length === 0){ alert('No hay datos para exportar.'); return; }
+
+  const encabezado = 'fecha_hora,nombre,carnet,grupo,pts_teoria,pts_subnet,pts_practicos,pts_total';
+  const filas = intentos.map(i=>[
+    new Date(i.created_at).toLocaleString('sv-SE'),
+    i.nombre, i.carnet, i.grupo || '',
+    i.pts_teoria, i.pts_subnet, i.pts_practicos, i.pts_total
+  ].map(v=>`"${String(v).replace(/"/g,'""')}"`).join(','));
+  const csv = [encabezado, ...filas].join('\n');
+
+  const blob = new Blob(['\ufeff'+csv], { type: 'text/csv;charset=utf-8;' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'intentos_examen_if0011.csv';
+  a.click();
+  URL.revokeObjectURL(a.href);
+});
+
+confirmarSesion();
+</script>
+</body>
+</html>
