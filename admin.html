@@ -94,7 +94,7 @@ tailwind.config = {
     <section class="bg-white border border-slate-200 rounded-md overflow-hidden">
       <div class="px-5 py-3 border-b border-slate-200">
         <h2 class="font-bold text-slate-800">Resumen por estudiante</h2>
-        <p class="text-sm text-slate-500 mt-0.5">Agrupado por carné · basado en los intentos registrados</p>
+        <p class="text-sm text-slate-500 mt-0.5">Agrupado por carné · clic en una fila para ver el detalle del estudiante</p>
       </div>
       <div class="overflow-x-auto">
         <table class="w-full text-sm">
@@ -107,11 +107,39 @@ tailwind.config = {
               <th class="py-3 px-5 text-center">Mejor</th>
               <th class="py-3 px-5 text-center">Último</th>
               <th class="py-3 px-5 text-center">Promedio</th>
-              <th class="py-3 px-5 text-right">Pendiente</th>
+              <th class="py-3 px-5 text-center">Primer intento</th>
             </tr>
           </thead>
           <tbody id="tablaResumen" class="divide-y divide-slate-100"></tbody>
         </table>
+      </div>
+    </section>
+
+    <section id="detalleEstudiante" class="hidden bg-white border border-ucr-300 rounded-md overflow-hidden">
+      <div class="px-5 py-3 border-b border-ucr-200 bg-ucr-50 flex items-center justify-between gap-3">
+        <div>
+          <h2 class="font-bold text-ucr-900">Detalle del estudiante</h2>
+          <p id="detalleTitulo" class="text-sm text-slate-600 mt-0.5"></p>
+        </div>
+        <button id="btnCerrarDetalle" class="text-slate-500 hover:text-slate-800 text-sm font-semibold px-3 py-1 rounded border border-slate-300 bg-white">Cerrar</button>
+      </div>
+      <div class="p-5 space-y-4">
+        <div id="detalleEstadisticas" class="grid grid-cols-2 sm:grid-cols-4 gap-3"></div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead class="bg-slate-50 text-left text-xs uppercase tracking-wide text-slate-500">
+              <tr>
+                <th class="py-2.5 px-4">Fecha y hora (timestamp)</th>
+                <th class="py-2.5 px-4 text-center">Teoría /50</th>
+                <th class="py-2.5 px-4 text-center">Subnet /10</th>
+                <th class="py-2.5 px-4 text-center">Prácticos /40</th>
+                <th class="py-2.5 px-4 text-center">Total /100</th>
+                <th class="py-2.5 px-4 text-center">Duración vs previo</th>
+              </tr>
+            </thead>
+            <tbody id="tablaDetalle" class="divide-y divide-slate-100"></tbody>
+          </table>
+        </div>
       </div>
     </section>
 
@@ -234,6 +262,7 @@ async function cargarDatos(){
     return;
   }
   document.getElementById('sinDatos').classList.add('hidden');
+  window.__intentos = intentos;
 
   // Resumen global
   document.getElementById('statIntentos').textContent = intentos.length;
@@ -241,20 +270,22 @@ async function cargarDatos(){
   document.getElementById('statPromedio').textContent = (intentos.reduce((a,i)=>a+i.pts_total,0)/intentos.length).toFixed(1);
   document.getElementById('statUltimo').textContent = fmtFecha(intentos[0].created_at);
 
-  // Resumen por carné
+  // Resumen por carné (guardamos los intentos completos para el detalle)
   const map = new Map();
   intentos.forEach(i=>{
     if (!map.has(i.carnet)) map.set(i.carnet, { nombre: i.nombre, grupo: i.grupo, lista:[] });
     const e = map.get(i.carnet);
-    e.lista.push(i.pts_total);
+    e.lista.push(i);
     e.nombre = i.nombre;
     e.grupo = i.grupo || '';
   });
   const filas = [...map.entries()].map(([carnet, e])=>{
-    const mejor = Math.max(...e.lista);
-    const ultimo = e.lista[0];
-    const prom = e.lista.reduce((a,b)=>a+b,0)/e.lista.length;
-    return `<tr>
+    const pts = e.lista.map(x=>x.pts_total);
+    const mejor = Math.max(...pts);
+    const ultimo = e.lista[0].pts_total;
+    const prom = pts.reduce((a,b)=>a+b,0)/pts.length;
+    const primer = e.lista[e.lista.length-1].created_at;
+    return `<tr class="cursor-pointer hover:bg-ucr-50" data-carnet="${escAttr(carnet)}">
       <td class="py-2.5 px-5 mono">${carnet}</td>
       <td class="py-2.5 px-5">${e.nombre}</td>
       <td class="py-2.5 px-5">${e.grupo || '—'}</td>
@@ -262,10 +293,14 @@ async function cargarDatos(){
       <td class="py-2.5 px-5 text-center">${mejor}</td>
       <td class="py-2.5 px-5 text-center">${ultimo}</td>
       <td class="py-2.5 px-5 text-center">${prom.toFixed(1)}</td>
-      <td class="py-2.5 px-5 text-right text-slate-400">—</td>
+      <td class="py-2.5 px-5 text-center text-slate-500">${fmtFecha(primer)}</td>
     </tr>`;
   });
   document.getElementById('tablaResumen').innerHTML = filas.join('');
+
+  document.querySelectorAll('#tablaResumen tr[data-carnet]').forEach(tr=>{
+    tr.addEventListener('click', ()=> mostrarDetalleEstudiante(tr.getAttribute('data-carnet')));
+  });
 
   // Historial completo
   const hist = intentos.map(i=>`<tr>
@@ -280,6 +315,51 @@ async function cargarDatos(){
   </tr>`);
   document.getElementById('tablaHistorial').innerHTML = hist.join('');
 }
+
+function escAttr(s){ return String(s).replace(/"/g,'&quot;'); }
+
+function mostrarDetalleEstudiante(carnet){
+  const intentos = (window.__intentos || []).filter(i=>i.carnet === carnet);
+  if (intentos.length === 0) return;
+
+  const e = intentos[0];
+  document.getElementById('detalleTitulo').textContent = `${e.nombre} · Carné ${carnet} ${e.grupo ? '· Grupo ' + e.grupo : ''}`;
+  document.getElementById('detalleEstudiante').classList.remove('hidden');
+
+  const pts = intentos.map(i=>i.pts_total);
+  const stats = `
+    <div class="bg-slate-50 border border-slate-200 rounded p-3"><p class="text-xs uppercase text-slate-500">Intentos</p><p class="text-2xl font-bold text-ucr-800">${intentos.length}</p></div>
+    <div class="bg-slate-50 border border-slate-200 rounded p-3"><p class="text-xs uppercase text-slate-500">Mejor</p><p class="text-2xl font-bold text-ucr-800">${Math.max(...pts)}</p></div>
+    <div class="bg-slate-50 border border-slate-200 rounded p-3"><p class="text-xs uppercase text-slate-500">Promedio</p><p class="text-2xl font-bold text-ucr-800">${(pts.reduce((a,b)=>a+b,0)/pts.length).toFixed(1)}</p></div>
+    <div class="bg-slate-50 border border-slate-200 rounded p-3"><p class="text-xs uppercase text-slate-500">PRIMER INTENTO</p><p class="text-sm font-semibold text-ucr-800 mt-1">${fmtFecha(intentos[intentos.length-1].created_at)}</p></div>
+  `;
+  document.getElementById('detalleEstadisticas').innerHTML = stats;
+
+  // Ordenar cronológicamente para calcular duración entre intentos
+  const crono = [...intentos].sort((a,b)=> new Date(a.created_at) - new Date(b.created_at));
+  const filas = crono.map((i, idx)=>{
+    let duracion = '—';
+    if (idx > 0){
+      const ms = new Date(i.created_at) - new Date(crono[idx-1].created_at);
+      const h = Math.floor(ms/3600000), m = Math.floor((ms%3600000)/60000);
+      duracion = h > 0 ? `${h} h ${m} min` : `${m} min`;
+    }
+    return `<tr>
+      <td class="py-2 px-4 mono">${fmtFecha(i.created_at)}${idx===0 ? ' <span class="text-green-700 font-semibold">(1º)</span>' : ''}</td>
+      <td class="py-2 px-4 text-center">${i.pts_teoria}</td>
+      <td class="py-2 px-4 text-center">${i.pts_subnet}</td>
+      <td class="py-2 px-4 text-center">${i.pts_practicos}</td>
+      <td class="py-2 px-4 text-center font-bold text-ucr-800">${i.pts_total}</td>
+      <td class="py-2 px-4 text-center text-slate-500">${duracion}</td>
+    </tr>`;
+  });
+  document.getElementById('tablaDetalle').innerHTML = filas.join('');
+  document.getElementById('detalleEstudiante').scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+document.getElementById('btnCerrarDetalle').addEventListener('click', ()=>{
+  document.getElementById('detalleEstudiante').classList.add('hidden');
+});
 
 document.getElementById('btnRecargar').addEventListener('click', cargarDatos);
 
