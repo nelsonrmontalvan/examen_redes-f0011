@@ -93,6 +93,8 @@ En https://vercel.com → **Add New → Project** → importe el repositorio (fr
 - Los estudiantes **no pueden leer** intentos ajenos (RLS: insert permitido, select solo docente autenticado).
 - Solo el docente puede **actualizar/borrar** (revocado para anónimos en `schema.sql`).
 - La clave del profesor (PIN `0101`) revela las respuestas en pantalla; se mantiene solo para revisión en clase.
+  Tras el **3er intento fallido** el PIN queda bloqueado en ese navegador (persiste al recargar) y solo un
+  acierto posterior lo rehabilita.
 - Parte II: la **división de bloques** del SVG de subnetting está oculta; se revela con la clave del docente (`1977`).
   Al tercer intento fallido la clave queda **bloqueada** en ese navegador (persiste al recargar); el PIN `0101`
   desbloquea y revela de todos modos.

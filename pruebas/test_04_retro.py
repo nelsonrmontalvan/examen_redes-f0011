@@ -40,7 +40,7 @@ with sync_playwright() as pw:
 
     t.ok('Retroalimentación generada automáticamente' in h, 'pie del documento')
     t.ok('E00001' in h, 'carné del estudiante en el documento')
-    t.ok('Parte I · Teoría — 40 buenas de 40' in h, 'Parte I: 40 buenas de 40')
+    t.ok('Parte I · Teoría — 39 buenas de 39' in h, 'Parte I: 39 buenas de 39')
     t.ok('Parte II · Subnetting — 6 de 7 ítems' in h, 'Parte II: 6 de 7 ítems')
     t.ok('Parte III · Prácticos — 12 de 12 incisos' in h, 'Parte III: 12 de 12 incisos')
     t.ok('Sin responder' in h, 'marca lo que no se respondió')
@@ -49,7 +49,7 @@ with sync_playwright() as pw:
     t.ok('https://' not in h.replace('https://riaigtmuixwzgwvjmugx', ''), 'no filtra claves de Supabase al documento')
     ruta.unlink()
 
-    # todo mal → la retroalimentación explica las 40
+    # todo mal → la retroalimentación explica las 39
     pg.reload(); pg.wait_for_timeout(400)
     llenar(pg, False)
     pg.evaluate(JS_STUB)
@@ -60,12 +60,12 @@ with sync_playwright() as pw:
     ruta2 = pathlib.Path(tempfile.gettempdir()) / 'retro_test2.html'
     dl2.value.save_as(str(ruta2))
     h2 = ruta2.read_text(encoding='utf-8')
-    t.ok('Parte I · Teoría — 0 buenas de 40' in h2, 'Parte I: 0 buenas de 40')
-    t.ok(h2.count('Respuesta correcta:') >= 47,
+    t.ok('Parte I · Teoría — 0 buenas de 39' in h2, 'Parte I: 0 buenas de 39')
+    t.ok(h2.count('Respuesta correcta:') >= 46,
          f'explica teoría y subnetting incorrectos ({h2.count("Respuesta correcta:")} veces)')
     t.ok(h2.count('Lo que se esperaba') >= 12,
          f'explica los 12 incisos de prácticos ({h2.count("Lo que se esperaba")} veces)')
-    t.ok(h2.count('Por qué:') >= 40, f'explica las 40 de teoría ({h2.count("Por qué:")} veces)')
+    t.ok(h2.count('Por qué:') >= 39, f'explica las 39 de teoría ({h2.count("Por qué:")} veces)')
     t.ok('¡Excelente! No tiene preguntas incorrectas' in h, 'Parte I sin errores dice que no hay incorrectas')
     t.ok('Parte II · Subnetting — 0 de 7 ítems' in h2, 'Parte II: 0 de 7')
     t.ok('Parte III · Prácticos — 0 de 12 incisos' in h2, 'Parte III: 0 de 12')

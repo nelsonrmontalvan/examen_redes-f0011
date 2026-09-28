@@ -28,7 +28,7 @@ with sync_playwright() as pw:
          f"cada carga califica 100/100 con el orden que sea: {[c['pts'] for c in cargas]}")
 
     sets_ok = all(set(c['preguntas']) == set(cargas[0]['preguntas']) for c in cargas)
-    t.ok(sets_ok, 'las 40 preguntas son las mismas en las 3 cargas')
+    t.ok(sets_ok, 'las 39 preguntas son las mismas en las 3 cargas')
     t.ok(all(set(c['subnet']) == set(cargas[0]['subnet']) for c in cargas), 'los 7 ítems de subnetting son los mismos')
     t.ok(all(set(c['casos']) == set(cargas[0]['casos']) for c in cargas), 'los 3 casos son los mismos')
 

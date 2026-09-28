@@ -58,8 +58,8 @@ with sync_playwright() as pw:
     ins = pg.evaluate("() => window.__inserts")
     t.ok(len(ins) == 1, f"un solo intento insertado ({len(ins)})")
     t.ok(ins and ins[0]['pts_total'] == 100, f"payload con 100 pts ({ins[0]['pts_total']})")
-    t.ok('respuestas' in ins[0] and len(ins[0]['respuestas']['teoria']) == 40,
-         'payload incluye las 40 respuestas de teoría')
+    t.ok('respuestas' in ins[0] and len(ins[0]['respuestas']['teoria']) == 39,
+         'payload incluye las 39 respuestas de teoría')
     t.ok('Intento guardado' in pg.inner_text('#zonaEstado'), 'mensaje de éxito')
     t.ok(pg.is_visible('#btnRetro'), 'aparece el botón de retroalimentación')
     t.ok(not errs, f'sin errores JS en el examen: {errs[:2]}')

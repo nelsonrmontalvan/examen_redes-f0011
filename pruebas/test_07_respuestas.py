@@ -57,7 +57,7 @@ with sync_playwright() as pw:
                p0: PRACTICOS[0].items[0].pts, sub1: SUBNET.find(x=>x.pts===1) ? 1 : 0 };
     }""")
     esperado = 100 - res['sub1'] - res['p0']
-    t.ok(res['t'] == 40 and res['s'] == 7 and res['p'] == 12,
+    t.ok(res['t'] == 39 and res['s'] == 7 and res['p'] == 12,
          f"encuesta: {res['t']} teoría, {res['s']} subnet, {res['p']} incisos")
 
     pg.evaluate(JS_STUB)
@@ -70,9 +70,9 @@ with sync_playwright() as pw:
     r = payload.get('respuestas')
     t.ok(isinstance(r, dict), 'payload incluye respuestas')
     if isinstance(r, dict):
-        t.ok(len(r.get('teoria', [])) == 40, f"teoría: {len(r.get('teoria', []))} ítems")
-        t.ok(all(x['ok'] for x in r['teoria']), 'las 40 de teoría marcadas ok')
-        t.ok(all(x['su'] for x in r['teoria']), 'las 40 tienen su respuesta')
+        t.ok(len(r.get('teoria', [])) == 39, f"teoría: {len(r.get('teoria', []))} ítems")
+        t.ok(all(x['ok'] for x in r['teoria']), 'las 39 de teoría marcadas ok')
+        t.ok(all(x['su'] for x in r['teoria']), 'las 39 tienen su respuesta')
         t.ok(all('esperada' in x and 'pregunta' in x for x in r['teoria']), 'teoría con pregunta y esperada')
         malos = [x for x in r['subnet'] if not x['ok']]
         t.ok(len(malos) == 1 and malos[0]['su'] == '', 'subnet sin responder: ok=false, su vacío')

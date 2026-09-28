@@ -95,6 +95,51 @@ with sync_playwright() as pw:
     t.ok(g2['fuera'] == [] and g2['solapes'] == 0, 'SVG válido también con la clave correcta')
     ctx.close()
 
+    # ---------- PIN del docente: bloqueo al 3er intento fallido ----------
+    ctx = b.new_context(viewport={'width': 1000, 'height': 1300})
+    pg = ctx.new_page(); pg.goto(URL); pg.wait_for_timeout(400)
+    t.ok(not pg.is_visible('#clave'), 'las respuestas arrancan ocultas')
+    pg.click('#btnProfesor')
+    for n in (1, 2, 3):
+        pg.fill('#pinInput', '9999')
+        pg.click('#btnPinOk'); pg.wait_for_timeout(120)
+        msg = pg.inner_text('#pinError')
+        if n < 3:
+            t.ok(f'Intento {n} de 3' in msg, f'PIN fallo {n}: avisa "Intento {n} de 3"')
+        else:
+            t.ok('bloqueado tras 3' in msg, f'PIN fallo 3: bloquea ({msg})')
+    t.ok(pg.is_disabled('#pinInput'), 'tras el 3er fallo el campo queda deshabilitado')
+    t.ok(pg.is_disabled('#btnPinOk'), 'tras el 3er fallo el botón queda deshabilitado')
+    t.ok(pg.evaluate("() => localStorage.getItem('examenPinBloqueada')") == '1', 'el bloqueo del PIN se persiste')
+    t.ok(not pg.is_visible('#clave'), 'el PIN bloqueado no revela nada')
+
+    # ni con el PIN correcto se pasa (seguimos bloqueados)
+    pg.evaluate("""() => {
+      document.getElementById('pinInput').disabled = false;
+      document.getElementById('pinInput').value = '0101';
+      document.getElementById('pinInput').disabled = true;
+      document.getElementById('btnPinOk').dispatchEvent(new Event('click'));
+    }""")
+    t.ok(not pg.is_visible('#clave'), 'con el PIN bloqueado ni el 0101 revela')
+
+    pg.reload(); pg.wait_for_timeout(400)
+    pg.click('#btnProfesor')
+    t.ok(pg.is_disabled('#pinInput'), 'el bloqueo del PIN sobrevive a la recarga')
+    t.ok('bloqueado' in pg.inner_text('#pinError'), 'al abrir el modal avisa que está bloqueado')
+
+    # una recarga con localStorage limpio: el 0101 sigue funcionando
+    pg.evaluate("() => { localStorage.removeItem('examenPinBloqueada'); localStorage.removeItem('examenIntentosPin'); }")
+    pg.reload(); pg.wait_for_timeout(400)
+    pg.click('#btnProfesor')
+    pg.fill('#pinInput', '0101')
+    pg.click('#btnPinOk'); pg.wait_for_timeout(300)
+    t.ok(pg.is_visible('#clave'), 'el 0101 revela las respuestas cuando no está bloqueado')
+    t.ok(not pg.is_disabled('#pinInput') and not pg.is_disabled('#btnPinOk'),
+         'los controles quedan habilitados tras un acierto')
+    t.ok(pg.evaluate("() => localStorage.getItem('examenPinBloqueada')") is None,
+         'un acierto limpia el bloqueo guardado')
+    ctx.close()
+
     # ---------- la clave no se imprime ----------
     ctx = b.new_context()
     pg = ctx.new_page(); pg.goto(URL); pg.wait_for_timeout(300)

@@ -363,12 +363,11 @@ const TEORIA = [
   { tema:'Semana 7 · Enrutamiento dinámico', pts:2, tipo:'mc', texto:'Tras configurar el protocolo, usted quiere confirmar que el router aprendió la red 192.168.3.0. ¿Qué comando muestra las rutas instaladas?', opciones:['show ip interface brief','show ip route','show arp','debug ospf all'], resp:1, just:'show ip route muestra todas las rutas aprendidas (C, S, D, O, R...).' },
   { tema:'Semana 7 · Enrutamiento dinámico', pts:2, tipo:'mc', texto:'Al escribir network 192.168.1.0 0.0.0.255 area 0 en OSPF, ¿qué papel cumple el valor 0.0.0.255?', opciones:['La máscara de subred','El wildcard (máscara inversa) para incluir el rango','El área de enrutamiento','El ID del proceso'], resp:1, just:'En OSPF/RIP(con máscara) y EIGRP se usan wildcards; 0.0.0.255 = /24.' },
   { tema:'Refuerzo · Conceptos base', pts:1, tipo:'mc', texto:'Al descomponer la dirección 192.168.1.10, ¿cómo se llama cada uno de sus cuatro grupos separados por puntos?', opciones:['Octeto (un grupo de 8 bits)','Nibble (un grupo de 4 bits)','Palabra (un grupo de 16 bits)','Prefijo (un grupo de 32 bits)'], resp:0, just:'Un octeto son 8 bits. IPv4 tiene 4 octetos (32 bits totales).' },
-  { tema:'Refuerzo · Conceptos base', pts:1, tipo:'mc', texto:'Al configurar una impresora que no debe ser visible desde Internet, ¿qué diferencia debe considerar entre IP pública y privada?', opciones:['La pública es enrutable en Internet y única; la privada solo es válida dentro de la red local (RFC 1918)','La privada es pública pero más lenta','La pública se asigna por DHCP y la privada es fija','No existe diferencia, son sinónimos'], resp:0, just:'IP pública = única y enrutable en Internet. IP privada = RFC 1918 (10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16), solo interna.' },
   { tema:'Refuerzo · Conceptos base', pts:1, tipo:'mc', texto:'Usted está en Router(config-if)# y necesita iniciar EIGRP con AS 100. ¿Cómo procede desde ese punto?', opciones:['Desde el modo privilegiado (enable)','Desde el modo de configuración global con "router eigrp 100"','Desde la interfaz Gig0/0','Desde la consola de una PC'], resp:1, just:'Se entra en modo global (Router(config)#) y se ejecuta "router eigrp <AS>".' },
   { tema:'Refuerzo · Conceptos base', pts:1, tipo:'mc', texto:'Un técnico describe el recorrido del bit desde el cable hasta la aplicación. ¿En qué orden correcto quedan las siete capas?', opciones:['Física, Enlace de Datos, Red, Transporte, Sesión, Presentación, Aplicación','Física, Red, Enlace de Datos, Transporte, Sesión, Presentación, Aplicación','Aplicación, Presentación, Sesión, Transporte, Red, Enlace de Datos, Física','Enlace de Datos, Física, Red, Transporte, Aplicación, Sesión, Presentación'], resp:0, just:'El orden correcto es 1-Física → 7-Aplicación: Física, Enlace, Red, Transporte, Sesión, Presentación, Aplicación.' },
   { tema:'Refuerzo · Conceptos base', pts:1, tipo:'mc', texto:'Una interfaz tiene máscara /26. ¿Qué significa exactamente ese número en la dirección?', opciones:['Que los primeros 26 bits son de red y quedan 6 bits para hosts (62 hosts útiles por subred)','Que la red tiene 26 hosts posibles','Que hay 26 subredes distintas','Que se usa en IPv6'], resp:0, just:'/26 = 26 bits de red, 6 de host → 2⁶−2 = 62 hosts útiles por subred.' },
   { tema:'Refuerzo · Conceptos base', pts:1, tipo:'mc', texto:'Una dirección comienza con 172 (Clase B). ¿Qué rango de primer octeto caracteriza tradicionalmente a esa clase?', opciones:['1 – 126','128 – 191','192 – 223','224 – 239'], resp:1, just:'Clase A: 1-126, Clase B: 128-191, Clase C: 192-223, Clase D (multicast): 224-239.' },
-  { tema:'Refuerzo · Conceptos base', pts:1, tipo:'mc', texto:'Debe crear 6 subredes y quiere saber cuántos bits tomarle al campo de host. ¿Qué cálculo le da la respuesta correcta?', opciones:['Se usa 2ⁿ ≥ número de subredes necesarias y se despeja el menor n','Se suman 8 bits por cada subred','Se divide el total de hosts entre la máscara','Se resta 256 al último octeto'], resp:0, just:'Se busca el menor n tal que 2ⁿ sea mayor o igual a la cantidad de subredes; ese n son los bits prestados.' },
+  { tema:'Refuerzo · Conceptos base', pts:2, tipo:'mc', texto:'Debe crear 6 subredes y quiere saber cuántos bits tomarle al campo de host. ¿Qué cálculo le da la respuesta correcta?', opciones:['Se usa 2ⁿ ≥ número de subredes necesarias y se despeja el menor n','Se suman 8 bits por cada subred','Se divide el total de hosts entre la máscara','Se resta 256 al último octeto'], resp:0, just:'Se busca el menor n tal que 2ⁿ sea mayor o igual a la cantidad de subredes; ese n son los bits prestados.' },
   { tema:'Refuerzo · Conceptos base', pts:1, tipo:'mc', texto:'Una PC con IP y máscara correctas hace ping a un vecino de su subred, pero no llega a 8.8.8.8. ¿Qué le falta configurar?', opciones:['La dirección del gateway (puerta de enlace), para salir hacia otras redes','La dirección MAC de su tarjeta de red','El nombre de dominio del equipo','La máscara /26 de la subred'], resp:0, just:'El gateway es la dirección IP del router de salida; sin él, el host solo se comunica dentro de su propia subred.' },
   { tema:'Refuerzo · Conceptos base', pts:1, tipo:'mc', texto:'Usted escribe google.com y la red necesita una dirección IP para abrir la conexión. ¿Qué sistema resuelve ese nombre?', opciones:['El DNS (Domain Name System), que traduce nombres de dominio a direcciones IP','El DHCP, que asigna direcciones IP automáticamente','El ARP, que resuelve direcciones IP a direcciones MAC','El TCP, que entrega los datos en orden y con confirmación'], resp:0, just:'El DNS traduce nombres legibles (ej. google.com) a direcciones IP, en la Capa de Aplicación.' },
   { tema:'Refuerzo · Conceptos base', pts:1, tipo:'mc', texto:'Con máscara /27, la segunda subred inicia 32 direcciones después de la primera. ¿Cómo se obtiene ese salto de 32?', opciones:['Se resta al 256 el valor del último octeto de la máscara (ej. /27 → 256−224 = 32)','Se multiplica la cantidad de hosts por 2','Se cuenta la cantidad de routers','El salto siempre es 4'], resp:0, just:'El incremento = 256 − último octeto de la máscara. Ej. /27 (255.255.255.224) → salto de 32 direcciones por subred.' }
@@ -1005,21 +1004,33 @@ function renderClave(){
 ================================================================ */
 // Modal PIN
 const modal = document.getElementById('modalPin');
-document.getElementById('btnProfesor').addEventListener('click', ()=> modal.classList.remove('hidden'));
+document.getElementById('btnProfesor').addEventListener('click', ()=>{
+  modal.classList.remove('hidden');
+  if (pinBloqueado) mostrarPinError('PIN bloqueado tras 3 intentos fallidos. Consulte al docente.');
+});
 document.getElementById('btnPinCancelar').addEventListener('click', ()=>{ modal.classList.add('hidden'); document.getElementById('pinError').classList.add('hidden'); document.getElementById('pinInput').value=''; });
 document.getElementById('btnPinOk').addEventListener('click', ()=>{
+  if (pinBloqueado) return;
   const val = document.getElementById('pinInput').value.trim();
   if (val === PIN_PROFESOR){
     desbloqueado = true;
     modal.classList.add('hidden');
     document.getElementById('pinError').classList.add('hidden');
     document.getElementById('pinInput').value='';
+    lsDel(K_PIN_INTENTOS); lsDel(K_PIN_BLOQUEO);
+    intentosPin = 0; pinBloqueado = false;
+    document.getElementById('pinInput').disabled = false;
+    document.getElementById('btnPinOk').disabled = false;
+    document.getElementById('btnPinOk').classList.remove('opacity-50','cursor-not-allowed');
     document.getElementById('clave').classList.remove('hidden');
     document.querySelectorAll('.clave-resp').forEach(el=>el.classList.remove('hidden'));
     document.getElementById('clave').scrollIntoView({behavior:'smooth'});
     if (document.getElementById('panelDivision').style.display === 'none') revelarDivision(); // el PIN del docente también revela y desbloquea
   } else {
-    document.getElementById('pinError').classList.remove('hidden');
+    intentosPin++;
+    lsSet(K_PIN_INTENTOS, String(intentosPin));
+    if (intentosPin >= 3){ bloquearPin(); return; }
+    mostrarPinError('PIN incorrecto. Intento ' + intentosPin + ' de 3.');
   }
 });
 document.getElementById('pinInput').addEventListener('keydown', e=>{ if (e.key==='Enter') document.getElementById('btnPinOk').click(); });
@@ -1087,6 +1098,26 @@ document.getElementById('btnOKDivision').addEventListener('click', intentarDivis
 document.getElementById('btnCancelDivision').addEventListener('click', ()=>{ mostrarFormDivision(false); msgDivision(''); });
 document.getElementById('inputDivision').addEventListener('keydown', e=>{ if (e.key==='Enter') intentarDivision(); });
 if (divisionBloqueada) bloquearDivision();
+
+/* ---- PIN del docente: bloqueo al 3er intento fallido ---- */
+const K_PIN_INTENTOS = 'examenIntentosPin';
+const K_PIN_BLOQUEO  = 'examenPinBloqueada';
+let intentosPin = parseInt(lsGet(K_PIN_INTENTOS) || '0', 10) || 0;
+let pinBloqueado = lsGet(K_PIN_BLOQUEO) === '1';
+function mostrarPinError(msg){
+  const e = document.getElementById('pinError');
+  e.textContent = msg;
+  e.classList.remove('hidden');
+}
+function bloquearPin(){
+  pinBloqueado = true;
+  lsSet(K_PIN_BLOQUEO, '1');
+  document.getElementById('pinInput').disabled = true;
+  document.getElementById('btnPinOk').disabled = true;
+  document.getElementById('btnPinOk').classList.add('opacity-50','cursor-not-allowed');
+  mostrarPinError('PIN bloqueado tras 3 intentos fallidos. Consulte al docente.');
+}
+if (pinBloqueado) bloquearPin();
 
 // Imprimir
 document.getElementById('btnImprimir').addEventListener('click', ()=>{ mostrarResultado(); setTimeout(()=>window.print(), 150); });
