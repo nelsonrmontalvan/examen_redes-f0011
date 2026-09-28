@@ -135,6 +135,7 @@ tailwind.config = {
                 <th class="py-2.5 px-4 text-center">Prácticos /40</th>
                 <th class="py-2.5 px-4 text-center">Total /100</th>
                 <th class="py-2.5 px-4 text-center">Duración vs previo</th>
+                <th class="py-2.5 px-4 text-center">Respuestas</th>
               </tr>
             </thead>
             <tbody id="tablaDetalle" class="divide-y divide-slate-100"></tbody>
@@ -171,6 +172,71 @@ tailwind.config = {
   </section>
 
 </main>
+
+<!-- Render de las respuestas crudas (script clásico: accesible desde el módulo y desde pruebas) -->
+<script>
+function escA(s){ return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+function htmlRespuestas(r){
+  if (!r) return '<p class="text-sm text-slate-500">Este intento no tiene respuestas guardadas (se registró antes de la actualización o el guardado falló).</p>';
+  const t = Array.isArray(r.teoria) ? r.teoria : [];
+  const s = Array.isArray(r.subnet) ? r.subnet : [];
+  const p = Array.isArray(r.practicos) ? r.practicos : [];
+  const tOK = t.filter(x=>x.ok).length;
+  const sOK = s.filter(x=>x.ok).length;
+  const pItems = p.flatMap(c => c.items || []);
+  const pOK = pItems.filter(x=>x.ok).length;
+  const badge = ok => ok
+    ? '<span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-green-100 text-green-700 font-bold text-xs">✓</span>'
+    : '<span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-red-100 text-red-700 font-bold text-xs">✗</span>';
+  const tarjeta = (a,b) => `<div class="bg-slate-100 border border-slate-200 rounded p-3">
+      <p class="text-xs uppercase text-slate-500">${a}</p><p class="font-semibold">${b}</p></div>`;
+
+  let h = '<div class="space-y-4">';
+  h += `<div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+    ${tarjeta('Parte I · Teoría', `${tOK} de ${t.length} correctas`)}
+    ${tarjeta('Parte II · Subnetting', `${sOK} de ${s.length} correctas`)}
+    ${tarjeta('Parte III · Prácticos', `${pOK} de ${pItems.length} incisos correctos`)}</div>`;
+
+  const malas = t.filter(x=>!x.ok);
+  h += `<div><p class="font-semibold text-slate-700 mb-1">Parte I · incorrectas (${malas.length})</p>`;
+  if (!malas.length) h += '<p class="text-sm text-green-700">Ninguna: todas correctas.</p>';
+  else h += '<ul class="space-y-2">' + malas.map(x=>`
+      <li class="border border-red-200 bg-red-50 rounded p-2">
+        <p class="text-xs text-slate-500">Pregunta ${x.n}</p>
+        <p>${escA(x.pregunta)}</p>
+        <p class="mt-1"><b>Su respuesta:</b> ${escA(x.su || '(sin responder)')}</p>
+        <p class="text-green-800"><b>Esperada:</b> ${escA(x.esperada)}</p>
+        ${x.just ? `<p class="text-xs text-slate-600 mt-1">${escA(x.just)}</p>` : ''}
+      </li>`).join('') + '</ul>';
+  h += '</div>';
+
+  h += `<div><p class="font-semibold text-slate-700 mb-1">Parte II · Subnetting — lo que escribió (${sOK}/${s.length})</p>`;
+  if (!s.length) h += '<p class="text-sm text-slate-500">Sin respuestas.</p>';
+  else h += '<ul class="space-y-2">' + s.map(x=>`
+      <li class="border rounded p-2 ${x.ok ? 'border-green-200 bg-green-50' : 'border-red-200 bg-red-50'}">
+        ${badge(x.ok)} <b class="text-xs text-slate-600">${x.n}.</b> ${escA(x.pregunta)}
+        <p class="mt-1"><b>Su respuesta:</b> ${escA(x.su || '(sin responder)')}
+        ${x.ok ? '' : `<span class="text-green-800"><b> · Esperada:</b> ${escA(x.esperada)}</span>`}</p>
+      </li>`).join('') + '</ul>';
+  h += '</div>';
+
+  h += `<div><p class="font-semibold text-slate-700 mb-1">Parte III · Prácticos — lo que escribió (${pOK}/${pItems.length})</p>`;
+  if (!p.length) h += '<p class="text-sm text-slate-500">Sin respuestas.</p>';
+  else p.forEach(c=>{
+    h += `<div class="mb-3"><p class="text-sm font-semibold text-ucr-800">${escA(c.caso)}</p>
+      <ul class="space-y-2 mt-1">` + (c.items||[]).map((i,ix)=>`
+        <li class="border rounded p-2 ${i.ok ? 'border-green-200 bg-green-50' : 'border-red-200 bg-red-50'}">
+          ${badge(i.ok)} <b class="text-xs text-slate-600">${ix+1}. (${i.pts}/${i.ptsTotal})</b> ${escA(i.pregunta)}
+          <p class="mt-1"><b>Su respuesta:</b> ${escA(i.su || '(sin responder)')}</p>
+          ${i.ok ? '' : `<p class="text-green-800"><b>Esperada:</b> ${escA(i.esperada)}</p>`}
+        </li>`).join('') + '</ul></div>';
+  });
+  h += '</div></div>';
+  return h;
+}
+window.htmlRespuestas = htmlRespuestas;
+</script>
 
 <script type="module">
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
@@ -245,7 +311,7 @@ async function cargarDatos(){
   if (!supabase) return;
   const { data: intentos, error } = await supabase
     .from('intentos')
-    .select('id, created_at, nombre, carnet, grupo, pts_teoria, pts_subnet, pts_practicos, pts_total')
+    .select('id, created_at, nombre, carnet, grupo, pts_teoria, pts_subnet, pts_practicos, pts_total, respuestas')
     .order('created_at', { ascending: false });
 
   if (error){
@@ -351,9 +417,17 @@ function mostrarDetalleEstudiante(carnet){
       <td class="py-2 px-4 text-center">${i.pts_practicos}</td>
       <td class="py-2 px-4 text-center font-bold text-ucr-800">${i.pts_total}</td>
       <td class="py-2 px-4 text-center text-slate-500">${duracion}</td>
-    </tr>`;
+      <td class="py-2 px-4 text-center"><button type="button" class="btnVerResp text-xs font-semibold text-ucr-700 hover:text-ucr-900 underline" data-idx="${idx}">Ver</button></td>
+    </tr>
+    <tr class="hidden" data-resp="${idx}"><td colspan="7" class="px-4 py-3 bg-slate-50">${window.htmlRespuestas(i.respuestas)}</td></tr>`;
   });
   document.getElementById('tablaDetalle').innerHTML = filas.join('');
+  document.querySelectorAll('#tablaDetalle .btnVerResp').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const fila = document.querySelector(`#tablaDetalle tr[data-resp="${btn.dataset.idx}"]`);
+      if (fila) fila.classList.toggle('hidden');
+    });
+  });
   document.getElementById('detalleEstudiante').scrollIntoView({behavior:'smooth', block:'start'});
 }
 

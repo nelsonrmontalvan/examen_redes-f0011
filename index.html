@@ -79,8 +79,8 @@ tailwind.config = {
       <h2 class="font-bold text-ucr-800 text-lg">Instrucciones</h2>
       <ul class="mt-2 text-sm space-y-1.5 list-disc pl-5">
         <li><strong>Parte I (50 pts):</strong> 40 preguntas de teoría. Tiempo sugerido de 60 minutos. No se permite material de consulta.</li>
-        <li><strong>Parte II (10 pts):</strong> un caso de subnetting. Responda en los campos indicados.</li>
-        <li><strong>Parte III (40 pts):</strong> tres casos prácticos que debe configurar en <strong>Cisco Packet Tracer</strong>. Escriba los comandos completos tal y como los usaría en el CLI. El docente verificará la topología final.</li>
+        <li><strong>Parte II (10 pts):</strong> un caso de subnetting. Cree una topología en Cisco Packet Tracer para simular todo el proceso de subnetting (véase la imagen guía) y responda en los campos indicados.</li>
+        <li><strong>Parte III (40 pts):</strong> tres casos prácticos, uno por protocolo de enrutamiento. Para cada caso: <strong>1)</strong> escriba los comandos completos tal y como los usaría en el CLI; <strong>2)</strong> usando Cisco Packet Tracer desarrolle una estructura que permita simular cada enrutamiento. Las imágenes guías muestran la estructura visual a construir. El docente verificará la topología final.</li>
         <li>Puntaje total del examen: <strong>100 pts</strong>. Valor: <strong>25 %</strong> de la nota del curso.</li>
       </ul>
     </div>
@@ -112,8 +112,152 @@ tailwind.config = {
 
           <div class="bg-ucr-50 border border-ucr-200 rounded p-4">
             <p class="font-semibold text-ucr-900">Enunciado</p>
-            <p class="mt-1">Una PYME con cinco sucursales (A, B, C, D y E) recibe el bloque <strong class="mono">200.10.20.0/24</strong> y necesita dividirlo en <strong>5 subredes del mismo tamaño</strong>, una por sucursal. Con base en este escenario responda lo solicitado. Muestre cálculo donde aplique.</p>
+            <p class="mt-1">Una institución educativa con cuatro sedes (Central, Norte, Sur y Oeste) recibe el bloque <strong class="mono">172.16.50.0/24</strong> y necesita dividirlo en <strong>4 subredes del mismo tamaño</strong>, una por sede. En Cisco Packet Tracer cree una topología con un router, un switch y <strong>2 PCs por sede</strong> (imagen guía) para simular todo el proceso de subnetting. Con base en este escenario responda lo solicitado. Muestre cálculo donde aplique.</p>
           </div>
+
+          <!-- Clave para revelar la division de bloques (docente) -->
+          <div class="no-print flex flex-wrap items-center gap-2" id="zonaClaveDivision">
+            <button id="btnPedirDivision" type="button"
+              class="text-sm font-semibold text-ucr-700 border border-ucr-300 bg-white hover:bg-ucr-50 px-3 py-1.5 rounded">
+              Mostrar la división de bloques
+            </button>
+            <span id="formDivision" class="hidden items-center gap-2">
+              <input id="inputDivision" type="password" inputmode="numeric" maxlength="4" placeholder="Clave"
+                class="w-28 border border-slate-300 rounded px-2 py-1.5 text-sm mono text-center tracking-[0.3em] focus:outline-none focus:ring-2 focus:ring-ucr-500">
+              <button id="btnOKDivision" type="button" class="bg-ucr-700 hover:bg-ucr-600 text-white text-sm font-semibold px-3 py-1.5 rounded">Mostrar</button>
+              <button id="btnCancelDivision" type="button" class="text-sm text-slate-500 hover:text-slate-700 px-2">Cancelar</button>
+            </span>
+            <span id="msgDivision" class="text-sm hidden"></span>
+          </div>
+
+          <figure class="border border-slate-200 rounded p-3 bg-white">
+            <figcaption class="text-xs font-bold uppercase tracking-wide text-slate-500 mb-2">Imagen guía · topología sugerida en Packet Tracer</figcaption>
+            <svg id="svgGuia2" viewBox="0 0 800 355" class="w-full h-auto" xmlns="http://www.w3.org/2000/svg" role="img"
+                 aria-label="Topologia con router R1, un switch y dos PCs por sede; la division de bloques se revela con la clave del docente">
+              <rect id="bgGuia2" width="800" height="355" fill="#f8fafc" rx="6"/>
+
+              <g id="panelDivision" style="display:none">
+              <!-- 1) Division del bloque -->
+              <text x="20" y="28" font-size="13" font-weight="700" fill="#164364" font-family="ui-sans-serif, system-ui, sans-serif">1) División del bloque 172.16.50.0/24 en 4 subredes iguales (2 bits prestados → /26, salto 64)</text>
+              <g font-family="ui-monospace, Menlo, monospace">
+                <rect x="20" y="42" width="760" height="70" fill="#eff7fd" stroke="#1576b4" stroke-width="1.5" rx="4"/>
+                <line x1="210" y1="42" x2="210" y2="112" stroke="#1576b4" stroke-width="1.5"/>
+                <line x1="400" y1="42" x2="400" y2="112" stroke="#1576b4" stroke-width="1.5"/>
+                <line x1="590" y1="42" x2="590" y2="112" stroke="#1576b4" stroke-width="1.5"/>
+
+                <text x="115" y="66" font-size="12" font-weight="700" fill="#164364" text-anchor="middle">Sede Central</text>
+                <text x="115" y="86" font-size="11" fill="#125e92" text-anchor="middle">172.16.50.0/26</text>
+                <text x="115" y="104" font-size="10" fill="#125e92" text-anchor="middle">útil .1 – .62 · BC .63</text>
+
+                <text x="305" y="66" font-size="12" font-weight="700" fill="#164364" text-anchor="middle">Sede Norte</text>
+                <text x="305" y="86" font-size="11" fill="#125e92" text-anchor="middle">172.16.50.64/26</text>
+                <text x="305" y="104" font-size="10" fill="#125e92" text-anchor="middle">útil .65 – .126 · BC .127</text>
+
+                <text x="495" y="66" font-size="12" font-weight="700" fill="#164364" text-anchor="middle">Sede Sur</text>
+                <text x="495" y="86" font-size="11" fill="#125e92" text-anchor="middle">172.16.50.128/26</text>
+                <text x="495" y="104" font-size="10" fill="#125e92" text-anchor="middle">útil .129 – .190 · BC .191</text>
+
+                <text x="685" y="66" font-size="12" font-weight="700" fill="#164364" text-anchor="middle">Sede Oeste</text>
+                <text x="685" y="86" font-size="11" fill="#125e92" text-anchor="middle">172.16.50.192/26</text>
+                <text x="685" y="104" font-size="10" fill="#125e92" text-anchor="middle">útil .193 – .254 · BC .255</text>
+              </g>
+              </g>
+
+              <g id="panelTopologia" transform="translate(0,-110)">
+              <line x1="20" y1="135" x2="780" y2="135" stroke="#cbd5e1" stroke-dasharray="6 4"/>
+
+              <!-- 2) Topologia sugerida -->
+              <text x="20" y="163" font-size="13" font-weight="700" fill="#164364" font-family="ui-sans-serif, system-ui, sans-serif">Topología sugerida en Packet Tracer (un switch y 2 PCs por sede, todas las sedes colgando de R1)</text>
+
+              <g font-family="ui-sans-serif, system-ui, sans-serif">
+                <!-- router -->
+                <rect x="330" y="185" width="140" height="56" rx="8" fill="#1576b4"/>
+                <text x="400" y="212" font-size="16" font-weight="700" fill="#ffffff" text-anchor="middle">R1</text>
+                <text x="400" y="231" font-size="11" fill="#d9edf9" text-anchor="middle">router</text>
+
+                <!-- enlaces -->
+                <line x1="400" y1="241" x2="95"  y2="290" stroke="#334155" stroke-width="2"/>
+                <line x1="400" y1="241" x2="298" y2="290" stroke="#334155" stroke-width="2"/>
+                <line x1="400" y1="241" x2="501" y2="290" stroke="#334155" stroke-width="2"/>
+                <line x1="400" y1="241" x2="704" y2="290" stroke="#334155" stroke-width="2"/>
+                <g font-size="10" fill="#125e92" font-weight="700">
+                  <text x="240" y="258">G0/0</text>
+                  <text x="330" y="258">G0/1</text>
+                  <text x="440" y="258">G0/2</text>
+                  <text x="545" y="258">G0/3</text>
+                </g>
+
+                <!-- switches -->
+                <g font-size="12">
+                  <rect x="20"  y="290" width="150" height="48" rx="6" fill="#ffffff" stroke="#334155" stroke-width="1.5"/>
+                  <rect x="223" y="290" width="150" height="48" rx="6" fill="#ffffff" stroke="#334155" stroke-width="1.5"/>
+                  <rect x="426" y="290" width="150" height="48" rx="6" fill="#ffffff" stroke="#334155" stroke-width="1.5"/>
+                  <rect x="629" y="290" width="150" height="48" rx="6" fill="#ffffff" stroke="#334155" stroke-width="1.5"/>
+                  <g font-weight="700" fill="#164364" text-anchor="middle">
+                    <text x="95"  y="311">Sede Central</text>
+                    <text x="298" y="311">Sede Norte</text>
+                    <text x="501" y="311">Sede Sur</text>
+                    <text x="704" y="311">Sede Oeste</text>
+                  </g>
+                  <g font-size="10" fill="#64748b" text-anchor="middle">
+                    <text x="95"  y="329">switch</text>
+                    <text x="298" y="329">switch</text>
+                    <text x="501" y="329">switch</text>
+                    <text x="704" y="329">switch</text>
+                  </g>
+
+                  <!-- enlaces switch-PC (2 PCs por sede) -->
+                  <line x1="95"  y1="338" x2="57"  y2="360" stroke="#334155" stroke-width="2"/>
+                  <line x1="95"  y1="338" x2="133" y2="360" stroke="#334155" stroke-width="2"/>
+                  <line x1="298" y1="338" x2="260" y2="360" stroke="#334155" stroke-width="2"/>
+                  <line x1="298" y1="338" x2="336" y2="360" stroke="#334155" stroke-width="2"/>
+                  <line x1="501" y1="338" x2="463" y2="360" stroke="#334155" stroke-width="2"/>
+                  <line x1="501" y1="338" x2="539" y2="360" stroke="#334155" stroke-width="2"/>
+                  <line x1="704" y1="338" x2="666" y2="360" stroke="#334155" stroke-width="2"/>
+                  <line x1="704" y1="338" x2="742" y2="360" stroke="#334155" stroke-width="2"/>
+
+                  <!-- 2 PCs por sede -->
+                  <rect x="23"  y="360" width="68" height="34" rx="4" fill="#eff7fd" stroke="#1576b4" stroke-width="1.5"/>
+                  <rect x="99"  y="360" width="68" height="34" rx="4" fill="#eff7fd" stroke="#1576b4" stroke-width="1.5"/>
+                  <rect x="226" y="360" width="68" height="34" rx="4" fill="#eff7fd" stroke="#1576b4" stroke-width="1.5"/>
+                  <rect x="302" y="360" width="68" height="34" rx="4" fill="#eff7fd" stroke="#1576b4" stroke-width="1.5"/>
+                  <rect x="429" y="360" width="68" height="34" rx="4" fill="#eff7fd" stroke="#1576b4" stroke-width="1.5"/>
+                  <rect x="505" y="360" width="68" height="34" rx="4" fill="#eff7fd" stroke="#1576b4" stroke-width="1.5"/>
+                  <rect x="632" y="360" width="68" height="34" rx="4" fill="#eff7fd" stroke="#1576b4" stroke-width="1.5"/>
+                  <rect x="708" y="360" width="68" height="34" rx="4" fill="#eff7fd" stroke="#1576b4" stroke-width="1.5"/>
+                  <g font-size="11" fill="#164364" text-anchor="middle" font-weight="700">
+                    <text x="57"  y="381">PC1</text>
+                    <text x="133" y="381">PC2</text>
+                    <text x="260" y="381">PC3</text>
+                    <text x="336" y="381">PC4</text>
+                    <text x="463" y="381">PC5</text>
+                    <text x="539" y="381">PC6</text>
+                    <text x="666" y="381">PC7</text>
+                    <text x="742" y="381">PC8</text>
+                  </g>
+
+                  <!-- subred de cada sede (respuesta: se revela con la clave) -->
+                  <g id="ipsRespuestas" style="display:none">
+                  <g font-size="10" fill="#164364" text-anchor="middle" font-family="ui-monospace, Menlo, monospace">
+                    <text x="95"  y="412">172.16.50.0/26</text>
+                    <text x="298" y="412">172.16.50.64/26</text>
+                    <text x="501" y="412">172.16.50.128/26</text>
+                    <text x="704" y="412">172.16.50.192/26</text>
+                  </g>
+                  <g font-size="9" fill="#64748b" text-anchor="middle" font-family="ui-monospace, Menlo, monospace">
+                    <text x="95"  y="428">GW R1: .1</text>
+                    <text x="298" y="428">GW R1: .65</text>
+                    <text x="501" y="428">GW R1: .129</text>
+                    <text x="704" y="428">GW R1: .193</text>
+                  </g>
+                  </g>
+                </g>
+
+                <text x="20" y="455" font-size="10" fill="#64748b">Asigne a cada interfaz de R1 la primera dirección útil de su subred y a cada PC una dirección dentro del rango de su sede.</text>
+              </g>
+              </g>
+            </svg>
+          </figure>
 
           <div class="space-y-3" id="subnetting">
             <!-- dinamico -->
@@ -133,7 +277,7 @@ tailwind.config = {
       <div class="rounded-md bg-white border border-slate-200">
         <div class="px-5 py-3 border-b border-slate-200">
           <h2 class="text-lg font-bold text-slate-800">Parte III · Casos prácticos en Packet Tracer <span class="text-sm font-normal text-slate-500">(40 pts)</span></h2>
-          <p class="text-sm text-slate-600 mt-1">Para cada caso, construya la topología en Cisco Packet Tracer y escriba la configuración CLI completa. El docente revisará la topología en el laboratorio.</p>
+          <p class="text-sm text-slate-600 mt-1">Para cada caso: <strong>1-</strong> Escriba los comandos completos tal y como los usaría en el CLI. <strong>2-</strong> Usando Cisco Packet Tracer desarrolle una estructura que permita simular CADA enrutamiento. La imagen guía muestra la estructura visual a construir; el docente revisará la topología en el laboratorio.</p>
         </div>
         <div class="p-5 sm:p-6 space-y-8" id="practicos"><!-- dinamico --></div>
       </div>
@@ -178,105 +322,245 @@ const PIN_PROFESOR = '0101';
 // ---- Preguntas de teoría ----------------------------------------
 const TEORIA = [
   // --- Semana 1: Modelo OSI ---
-  { tema:'Semana 1 · Modelos de referencia', pts:1, tipo:'mc', texto:'¿Qué organización desarrolló el modelo OSI para resolver la falta de compatibilidad entre fabricantes?', opciones:['IEEE','ISO (Organización Internacional de Normalización)','IETF','ANSI'], resp:1, just:'La ISO (International Organization for Standardization).' },
-  { tema:'Semana 1 · Modelos de referencia', pts:1, tipo:'mc', texto:'¿Cómo se denomina la Unidad de Datos (PDU) en la Capa 3 del modelo OSI?', opciones:['Trama','Segmento','Paquete','Bit'], resp:2, just:'En la Capa 3 (Red) la PDU se llama Paquete.' },
-  { tema:'Semana 1 · Modelos de referencia', pts:1, tipo:'mc', texto:'La Capa 4 (Transporte) es responsable de:', opciones:['El direccionamiento lógico global','La entrega extremo a extremo, el control de flujo y la multiplexación','La transmisión de señales eléctricas','La traducción de formatos y cifrado'], resp:1, just:'La Capa 4 garantiza entrega extremo a extremo mediante segmentos.' },
-  { tema:'Semana 1 · Modelos de referencia', pts:1, tipo:'mc', texto:'¿Cuál es la principal diferencia funcional entre TCP y UDP?', opciones:['TCP es más rápido y UDP es más confiable','TCP es confiable mediante confirmaciones; UDP es veloz y se usa para streaming','TCP no usa puertos y UDP sí','Son idénticos, solo cambia el puerto'], resp:1, just:'TCP confirma (3-Way Handshake); UDP prioriza velocidad sin confirmación.' },
-  { tema:'Semana 1 · Modelos de referencia', pts:1, tipo:'mc', texto:'¿Cuál es el dispositivo característico que opera en la Capa 3?', opciones:['Switch','Hub','Router','NIC'], resp:2, just:'El router opera en la Capa 3 (Red).' },
-  { tema:'Semana 1 · Modelos de referencia', pts:1, tipo:'mc', texto:'Ordene los tres pasos del saludo de tres vías (3-Way Handshake) de TCP:', opciones:['ACK, SYN, SYN-ACK','SYN, SYN-ACK, ACK','SYN-ACK, ACK, SYN','SYN, ACK, SYN-ACK'], resp:1, just:'El orden correcto es SYN → SYN-ACK → ACK.' },
-  { tema:'Semana 1 · Modelos de referencia', pts:1, tipo:'mc', texto:'En la analogía postal, ¿qué componente de red equivale al número de serie (fábrica) de una casa?', opciones:['La dirección IP','La dirección MAC','El número de puerto','El nombre de dominio'], resp:1, just:'La MAC viene grabada de fábrica (Capa 2); la IP cambia según la red (Capa 3).' },
-  { tema:'Semana 1 · Modelos de referencia', pts:1, tipo:'mc', texto:'¿En qué capa reside un problema cuando la luz del puerto RJ-45 de una PC no enciende?', opciones:['Capa 7 (Aplicación)','Capa 3 (Red)','Capa 2 (Enlace)','Capa 1 (Física)'], resp:3, just:'Falta de enlace físico = Capa 1.' },
-  { tema:'Semana 1 · Modelos de referencia', pts:1, tipo:'mc', texto:'El envenenamiento de tablas para redirigir tráfico (ARP Spoofing) ocurre en la Capa:', opciones:['1 (Física)','2 (Enlace de Datos)','4 (Transporte)','7 (Aplicación)'], resp:1, just:'ARP opera en la Capa 2.' },
-  { tema:'Semana 1 · Modelos de referencia', pts:1, tipo:'mc', texto:'¿Por qué se dice que el modelo TCP/IP es la pila implementada en Internet y OSI el estándar de referencia?', opciones:['Porque TCP/IP se usa en producción mientras OSI se usa como marco teórico','Porque OSI no funciona','Porque TCP/IP tiene 7 capas','Porque OSI solo sirve para cableado'], resp:0, just:'TCP/IP es implementado; OSI es el modelo conceptual universal.' },
+  { tema:'Semana 1 · Modelos de referencia', pts:1, tipo:'mc', texto:'Una empresa necesita que equipos de distintos fabricantes se comuniquen bajo un mismo lenguaje de comunicación. ¿Qué organización diseñó el modelo de referencia que estandariza esa interacción?', opciones:['IEEE','ISO (Organización Internacional de Normalización)','IETF','ANSI'], resp:1, just:'La ISO (International Organization for Standardization).' },
+  { tema:'Semana 1 · Modelos de referencia', pts:1, tipo:'mc', texto:'Si al capturar tráfico observa un "paquete" viajando entre dos routers, ¿con qué nombre se designa la unidad de datos en la Capa 3 del modelo OSI?', opciones:['Trama','Segmento','Paquete','Bit'], resp:2, just:'En la Capa 3 (Red) la PDU se llama Paquete.' },
+  { tema:'Semana 1 · Modelos de referencia', pts:1, tipo:'mc', texto:'Usted transmite un archivo grande y ninguna pieza puede llegar fuera de orden ni desaparecer sin avisar. ¿Qué responsabilidad de la Capa 4 (Transporte) garantiza ese comportamiento?', opciones:['El direccionamiento lógico global','La entrega extremo a extremo, el control de flujo y la multiplexación','La transmisión de señales eléctricas','La traducción de formatos y cifrado'], resp:1, just:'La Capa 4 garantiza entrega extremo a extremo mediante segmentos.' },
+  { tema:'Semana 1 · Modelos de referencia', pts:1, tipo:'mc', texto:'Un streaming de video prefiere saltarse un fotograma dañado antes que frenarse para reenviarlo, mientras que una descarga no puede perder ni un byte. ¿Qué diferencia funcional explica esta elección?', opciones:['TCP es más rápido y UDP es más confiable','TCP es confiable mediante confirmaciones; UDP es veloz y se usa para streaming','TCP no usa puertos y UDP sí','Son idénticos, solo cambia el puerto'], resp:1, just:'TCP confirma (3-Way Handshake); UDP prioriza velocidad sin confirmación.' },
+  { tema:'Semana 1 · Modelos de referencia', pts:1, tipo:'mc', texto:'Entre dos redes distintas debe existir un equipo que tome decisiones según direcciones lógicas de red y no según direcciones de fábrica. ¿Cuál es ese dispositivo característico de la Capa 3?', opciones:['Switch','Hub','Router','NIC'], resp:2, just:'El router opera en la Capa 3 (Red).' },
+  { tema:'Semana 1 · Modelos de referencia', pts:1, tipo:'mc', texto:'En una red local, ¿qué dispositivo interconecta las PC, aprende las direcciones MAC y envía cada trama solo al puerto correcto?', opciones:['Switch','Router','Servidor DNS','Módem'], resp:0, just:'El switch opera en la Capa 2: aprende las MAC de sus puertos y conmuta tramas; el router (Capa 3) enruta paquetes entre redes.' },
+  { tema:'Semana 1 · Modelos de referencia', pts:1, tipo:'mc', texto:'Si la dirección de una casa cambia al mudarse, pero el número de serie grabado en el mueble permanece igual, ¿qué dato de red se comporta como ese número grabado de fábrica?', opciones:['La dirección IP','La dirección MAC','El número de puerto','El nombre de dominio'], resp:1, just:'La MAC viene grabada de fábrica (Capa 2); la IP cambia según la red (Capa 3).' },
+  { tema:'Semana 1 · Modelos de referencia', pts:1, tipo:'mc', texto:'Una PC no tiene conectividad y el LED del puerto de red está apagado. Aplicando el diagnóstico de abajo hacia arriba, ¿por dónde debe iniciar la revisión?', opciones:['Capa 7 (Aplicación)','Capa 3 (Red)','Capa 2 (Enlace)','Capa 1 (Física)'], resp:3, just:'Falta de enlace físico = Capa 1.' },
+  { tema:'Semana 1 · Modelos de referencia', pts:1, tipo:'mc', texto:'Un atacante se hace pasar por el router de la oficina y redirige el tráfico de la LAN con tablas de direcciones IP-MAC falsas. ¿En qué capa del modelo OSI se produce ese ataque?', opciones:['1 (Física)','2 (Enlace de Datos)','4 (Transporte)','7 (Aplicación)'], resp:1, just:'ARP opera en la Capa 2.' },
+  { tema:'Semana 1 · Modelos de referencia', pts:1, tipo:'mc', texto:'En la práctica, el tráfico real de Internet se construye sobre una pila concreta, mientras que otra sirve como marco para explicar y documentar. ¿Por qué se afirma que una es la pila implementada y la otra el modelo universal de referencia?', opciones:['Porque TCP/IP se usa en producción mientras OSI se usa como marco teórico','Porque OSI no funciona','Porque TCP/IP tiene 7 capas','Porque OSI solo sirve para cableado'], resp:0, just:'TCP/IP es implementado; OSI es el modelo conceptual universal.' },
 
   // --- Semanas 2-3: Direccionamiento IPv4 ---
-  { tema:'Semana 2-3 · Direccionamiento IPv4', pts:1, tipo:'mc', texto:'¿Cuántos bits tiene una dirección IPv4?', opciones:['32 bits en 4 octetos','64 bits en 8 octetos','128 bits en 16 octetos','16 bits en 2 octetos'], resp:0, just:'IPv4 = 32 bits, expresados en 4 octetos (formato decimal punteado).' },
-  { tema:'Semana 2-3 · Direccionamiento IPv4', pts:1, tipo:'mc', texto:'¿Qué máscara de subred corresponde a un /24?', opciones:['255.0.0.0','255.255.0.0','255.255.255.0','255.255.255.255'], resp:2, just:'/24 = 24 bits en red = 255.255.255.0.' },
-  { tema:'Semana 2-3 · Direccionamiento IPv4', pts:1, tipo:'mc', texto:'¿Cuál de las siguientes es una dirección IPv4 privada (Clase C)?', opciones:['8.8.8.8','192.168.1.10','200.10.20.1','172.32.10.5'], resp:1, just:'El rango privado Clase C es 192.168.0.0 – 192.168.255.255.' },
-  { tema:'Semana 2-3 · Direccionamiento IPv6', pts:1, tipo:'mc', texto:'¿Cuántos bits tiene una dirección IPv6?', opciones:['32 bits','64 bits','128 bits','256 bits'], resp:2, just:'IPv6 = 128 bits, escritos como 8 grupos hexadecimales.' },
-  { tema:'Semana 2-3 · Direccionamiento IPv6', pts:1, tipo:'mc', texto:'La dirección ::1 en IPv6 corresponde a:', opciones:['Broadcast','Loopback (la propia máquina)','Dirección de red','Multicast'], resp:1, just:'::1 es el loopback IPv6, equivalente a 127.0.0.1 en IPv4.' },
+  { tema:'Semana 2-3 · Direccionamiento IPv4', pts:1, tipo:'mc', texto:'Al convertir una dirección IPv4 completa a binario, ¿cuántos bits en total debe procesar la máquina?', opciones:['32 bits en 4 octetos','64 bits en 8 octetos','128 bits en 16 octetos','16 bits en 2 octetos'], resp:0, just:'IPv4 = 32 bits, expresados en 4 octetos (formato decimal punteado).' },
+  { tema:'Semana 2-3 · Direccionamiento IPv4', pts:1, tipo:'mc', texto:'La notación /24 equivale exactamente a la máscara:', opciones:['255.0.0.0','255.255.0.0','255.255.255.0','255.255.255.255'], resp:2, just:'/24 = 24 bits de red encendidos = 255.255.255.0.' },
+  { tema:'Semana 2-3 · Direccionamiento IPv4', pts:1, tipo:'mc', texto:'Una impresora se configura con una dirección válida en su red local que nunca será enruteada por Internet. ¿Cuál de estas opciones cumple además el rango privado de Clase C?', opciones:['8.8.8.8','192.168.1.10','200.10.20.1','172.32.10.5'], resp:1, just:'El rango privado Clase C es 192.168.0.0 – 192.168.255.255.' },
+  { tema:'Semana 2-3 · Direccionamiento IPv6', pts:1, tipo:'mc', texto:'Al comparar el espacio de direccionamiento de IPv4 con el de IPv6, ¿cuántos bits contiene exactamente una dirección IPv6?', opciones:['32 bits','64 bits','128 bits','256 bits'], resp:2, just:'IPv6 = 128 bits, escritos como 8 grupos hexadecimales.' },
+  { tema:'Semana 2-3 · Direccionamiento IPv6', pts:1, tipo:'mc', texto:'Al hacer ping a 127.0.0.1 (IPv4) o a ::1 (IPv6), ¿a qué equipo se está comunicando?', opciones:['A un servidor DNS de Internet','A la propia PC (loopback)','Al router de la red','A una dirección de red'], resp:1, just:'127.0.0.1 y ::1 son direcciones de loopback: el equipo se comunica consigo mismo.' },
 
   // --- Semana 4: Subnetting / VLSM ---
-  { tema:'Semana 4 · Subnetting y VLSM', pts:1, tipo:'mc', texto:'¿Cuál es el propósito del VLSM (máscara de subred de longitud variable)?', opciones:['Usar la misma máscara en todas las subredes','Aprovechar mejor las direcciones asignando a cada subred solo los hosts que necesita','Evitar el uso de routers','Aumentar la cantidad de direcciones públicas'], resp:1, just:'VLSM permite máscaras distintas según la cantidad real de hosts por subred.' },
-  { tema:'Semana 4 · Subnetting y VLSM', pts:1, tipo:'mc', texto:'Una subred /30 permite __ direcciones usable(s) para hosts:', opciones:['2 hosts útiles','30 hosts útiles','62 hosts útiles','254 hosts útiles'], resp:0, just:'/30 deja 2 bits para hosts: 2²−2 = 2 útiles. Típico de enlaces punto a punto.' },
-  { tema:'Semana 4 · Subnetting y VLSM', pts:1, tipo:'mc', texto:'Si aplica máscara /27 a 192.168.5.0, ¿cuántos hosts útiles hay por subred?', opciones:['30','32','62','126'], resp:0, just:'/27 deja 5 bits: 2⁵−2 = 30 hosts útiles.' },
+  { tema:'Semana 4 · Subnetting y VLSM', pts:1, tipo:'mc', texto:'Una empresa tiene una subred con solo 2 equipos y otra con 200 estaciones de trabajo. ¿Qué técnica permite darles máscaras distintas para no desperdiciar direcciones?', opciones:['DHCP (asignación automática de direcciones)','VLSM (máscara de subred de longitud variable)','NAT (traducción de direcciones públicas y privadas)','DNS (traducción de nombres a direcciones IP)'], resp:1, just:'VLSM asigna a cada subred la máscara que corresponde a la cantidad real de hosts.' },
+  { tema:'Semana 4 · Subnetting y VLSM', pts:1, tipo:'mc', texto:'Se asigna a un enlace punto a punto entre dos routers una subred /30. ¿Cuántas direcciones útiles quedan disponibles para configurar las dos interfaces?', opciones:['2 hosts útiles','30 hosts útiles','62 hosts útiles','254 hosts útiles'], resp:0, just:'/30 deja 2 bits para hosts: 2²−2 = 2 útiles. Típico de enlaces punto a punto.' },
+  { tema:'Semana 4 · Subnetting y VLSM', pts:1, tipo:'mc', texto:'Una subred 192.168.5.0 se configura con máscara /27. ¿Cuántas estaciones de trabajo pueden recibir dirección en ella?', opciones:['30 hosts','32 hosts','62 hosts','126 hosts'], resp:0, just:'/27 deja 5 bits: 2⁵−2 = 30 hosts útiles.' },
 
   // --- Semana 5: Internet/DNS ---
-  { tema:'Semana 5 · Internet y DNS', pts:1, tipo:'mc', texto:'En DNS, el registro A se usa para:', opciones:['Asociar un nombre de dominio con una dirección IPv4','Enviar correo electrónico','Definir el servidor de autoridad SOA','Traducir IPv6 a MAC'], resp:0, just:'El registro A (Address) mapea un nombre a una dirección IPv4.' },
-  { tema:'Semana 5 · Internet y DNS', pts:1, tipo:'mc', texto:'¿Qué organización es la autoridad que administra el registro de dominios .cr en Costa Rica?', opciones:['ICANN','NIC Costa Rica (NIC-Internet)','IEEE','SUTEL'], resp:1, just:'NIC Costa Rica administra el registro de dominios .cr.' },
+  { tema:'Semana 5 · Internet y DNS', pts:1, tipo:'mc', texto:'El navegador recibe el nombre de un sitio, pero la máquina necesita una dirección IPv4 para abrir la conexión. ¿Qué registro DNS entrega esa traducción?', opciones:['El registro A, que asocia un nombre de dominio con una dirección IPv4','El registro MX, que se usa para enviar correo electrónico','El registro SOA, que define el servidor de autoridad','El registro AAAA, que asocia un nombre con una dirección IPv6'], resp:0, just:'El registro A (Address) mapea un nombre a una dirección IPv4.' },
+  { tema:'Semana 5 · Internet y DNS', pts:1, tipo:'mc', texto:'Usted va a registrar un dominio bajo .cr. ¿Cuál es la entidad costarricense responsable de administrar ese espacio de nombres?', opciones:['ICANN','NIC Costa Rica (NIC-Internet)','IEEE','SUTEL'], resp:1, just:'NIC Costa Rica administra el registro de dominios .cr.' },
 
   // --- Semana 6: Enrutamiento estático / tabla ARP ---
-  { tema:'Semana 6 · Enrutamiento (semana 6)', pts:2, tipo:'mc', texto:'¿Cuál es el comando de Cisco IOS para configurar una ruta estática?', opciones:['router static','ip route','ip add-route','route add'], resp:1, just:'ip route <red-destino> <máscara> <siguiente salto>.' },
-  { tema:'Semana 6 · Enrutamiento', pts:2, tipo:'mc', texto:'La tabla ARP mantiene la relación entre:', opciones:['Dirección IP y puerto','Nombre de dominio e IP','Dirección IP y dirección MAC','Dirección MAC y VLAN'], resp:2, just:'ARP resuelve IP → MAC dentro de la misma red.' },
-  { tema:'Semana 6 · Enrutamiento', pts:2, tipo:'mc', texto:'Ciudad habilitó una segunda puerta en un router. El estudiante guardó los cambios del R1 con "wr" pero al cerrar y abrir Packet Tracer la configuración se perdió. ¿Cómo evita esto en una simulación?', opciones:['Configurando de nuevo cada vez','Habilitando el guardado automático del archivo .pkt en Packet Tracer','No se puede guardar config en Packet Tracer','Usando "save config run"'], resp:1, just:'En Packet Tracer se guarda el archivo .pkt; la "wr" no persiste si no se guarda el archivo.' },
+  { tema:'Semana 6 · Enrutamiento (semana 6)', pts:2, tipo:'mc', texto:'El enrutamiento estático (rutas fijas, sin protocolo dinámico) se configura con el comando:', opciones:['router rip','ip route','show ip route','ping'], resp:1, just:'ip route <red-destino> <máscara> <siguiente salto> configura una ruta estática.' },
+  { tema:'Semana 6 · Enrutamiento', pts:2, tipo:'mc', texto:'La tabla ARP guarda la traducción entre dos identificadores de un mismo segmento local. ¿Qué par de direcciones relaciona?', opciones:['Dirección IP y puerto','Nombre de dominio e IP','Dirección IP y dirección MAC','Dirección MAC y VLAN'], resp:2, just:'ARP resuelve IP → MAC dentro de la misma red.' },
+  { tema:'Semana 6 · Enrutamiento', pts:2, tipo:'mc', texto:'Una PC conoce la dirección IP del router, pero no su dirección MAC. ¿Qué mensaje envía para obtenerla?', opciones:['Una petición ARP (ARP Request)','Una consulta DNS','Una ruta estática','Un mensaje de bienvenida TCP'], resp:0, just:'ARP resuelve IP → MAC: la PC envía una petición ARP en broadcast dentro de su red.' },
 
   // --- Semana 7: Enrutamiento dinámico ---
-  { tema:'Semana 7 · Enrutamiento dinámico', pts:2, tipo:'mc', texto:'RIP es un protocolo de:', opciones:['Estado de enlace','Vector de distancia basado en conteo de saltos','Path-vector','Híbrido propietario de Cisco'], resp:1, just:'RIP usa vector de distancia; su métrica es el conteo de saltos (máx 15).' },
-  { tema:'Semana 7 · Enrutamiento dinámico', pts:2, tipo:'mc', texto:'El límite máximo de saltos de RIP es:', opciones:['15','16','31','255'], resp:0, just:'15 saltos válidos; 16 se considera red inalcanzable.' },
-  { tema:'Semana 7 · Enrutamiento dinámico', pts:2, tipo:'mc', texto:'OSPF calcula la ruta más corta usando el algoritmo:', opciones:['Bellman-Ford','DUAL','Dijkstra','Floyd-Warshall'], resp:2, just:'OSPF usa el algoritmo de Dijkstra (shortest path first).' },
-  { tema:'Semana 7 · Enrutamiento dinámico', pts:2, tipo:'mc', texto:'EIGRP es un protocolo:', opciones:['Estándar abierto de estado de enlace','Híbrido de vector de distancia, propietario de Cisco, que usa el algoritmo DUAL','Path-vector para Internet','De broadcast restringido sin métricas'], resp:1, just:'EIGRP es híbrido y propietario de Cisco; usa DUAL y métrica compuesta.' },
-  { tema:'Semana 7 · Enrutamiento dinámico', pts:2, tipo:'mc', texto:'BGP es el protocolo encargado de enrutar entre:', opciones:['Routers dentro de una misma LAN','Sistemas Autónomos (inter-ISP) a nivel de Internet','Un switch y una PC','Dos hosts en la misma subred'], resp:1, just:'BGP (Path-Vector) conecta Sistemas Autónomos; es el "pegamento" de Internet.' },
-  { tema:'Semana 7 · Enrutamiento dinámico', pts:2, tipo:'mc', texto:'El comando para ver la tabla de enrutamiento y confirmar que el enrutamiento dinámico aprendió rutas es:', opciones:['show ip interface brief','show ip route','show arp','debug ospf all'], resp:1, just:'show ip route muestra todas las rutas aprendidas (C, S, D, O, R...).' },
-  { tema:'Semana 7 · Enrutamiento dinámico', pts:2, tipo:'mc', texto:'Un estudiante configura OSPF con "network 192.168.1.0 0.0.0.255 area 0". La parte "0.0.0.255" es:', opciones:['La máscara de subred','El wildcard (máscara inversa) para incluir el rango','El área de enrutamiento','El ID del proceso'], resp:1, just:'En OSPF/RIP(con máscara) y EIGRP se usan wildcards; 0.0.0.255 = /24.' },
-  { tema:'Refuerzo · Conceptos base', pts:1, tipo:'mc', texto:'¿Qué es un octeto en una dirección IP?', opciones:['Un grupo de 8 bits','Un grupo de 4 bits','Un grupo de 16 bits','Un conjunto de 32 bits'], resp:0, just:'Un octeto son 8 bits. IPv4 tiene 4 octetos (32 bits totales).' },
-  { tema:'Refuerzo · Conceptos base', pts:1, tipo:'mc', texto:'Defina la diferencia entre una dirección IP pública y una privada.', opciones:['La pública es enrutable en Internet y única; la privada solo es válida dentro de la red local (RFC 1918)','La privada es pública pero más lenta','La pública se asigna por DHCP y la privada es fija','No existe diferencia, son sinónimos'], resp:0, just:'IP pública = única y enrutable en Internet. IP privada = RFC 1918 (10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16), solo interna.' },
-  { tema:'Refuerzo · Conceptos base', pts:1, tipo:'mc', texto:'¿Desde qué modo de IOS se configura un protocolo de enrutamiento como EIGRP?', opciones:['Desde el modo privilegiado (enable)','Desde el modo de configuración global con "router eigrp 100"','Desde la interfaz Gig0/0','Desde la consola de una PC'], resp:1, just:'Se entra en modo global (Router(config)#) y se ejecuta "router eigrp <AS>".' },
-  { tema:'Refuerzo · Conceptos base', pts:1, tipo:'mc', texto:'Ordene las capas del modelo OSI de la más baja a la más alta:', opciones:['Física, Enlace de Datos, Red, Transporte, Sesión, Presentación, Aplicación','Física, Red, Enlace de Datos, Transporte, Sesión, Presentación, Aplicación','Aplicación, Presentación, Sesión, Transporte, Red, Enlace de Datos, Física','Enlace de Datos, Física, Red, Transporte, Aplicación, Sesión, Presentación'], resp:0, just:'El orden correcto es 1-Física → 7-Aplicación: Física, Enlace, Red, Transporte, Sesión, Presentación, Aplicación.' },
-  { tema:'Refuerzo · Conceptos base', pts:1, tipo:'mc', texto:'¿Qué significa la máscara /26 en una dirección IP?', opciones:['Que los primeros 26 bits son de red y quedan 6 bits para hosts (62 hosts útiles por subred)','Que la red tiene 26 hosts posibles','Que hay 26 subredes distintas','Que se usa en IPv6'], resp:0, just:'/26 = 26 bits de red, 6 de host → 2⁶−2 = 62 hosts útiles por subred.' },
-  { tema:'Refuerzo · Conceptos base', pts:1, tipo:'mc', texto:'¿Cuál es el rango del primer octeto de una dirección IPv4 de Clase B?', opciones:['1 – 126','128 – 191','192 – 223','224 – 239'], resp:1, just:'Clase A: 1-126, Clase B: 128-191, Clase C: 192-223, Clase D (multicast): 224-239.' },
-  { tema:'Refuerzo · Conceptos base', pts:1, tipo:'mc', texto:'¿Cómo se calcula cuántos bits hay que "pedir prestados" al octeto de host para crear subredes?', opciones:['Se usa 2ⁿ ≥ número de subredes necesarias y se despeja el menor n','Se suman 8 bits por cada subred','Se divide el total de hosts entre la máscara','Se resta 256 al último octeto'], resp:0, just:'Se busca el menor n tal que 2ⁿ sea mayor o igual a la cantidad de subredes; ese n son los bits prestados.' },
-  { tema:'Refuerzo · Conceptos base', pts:1, tipo:'mc', texto:'¿Qué función cumple el gateway (puerta de enlace) en una red?', opciones:['Permite que un host salga de su red local hacia otras redes','Asigna direcciones IP dinámicas','Resuelve nombres de dominio','Convierte IPv4 en IPv6'], resp:0, just:'El gateway es la dirección IP del router de salida; sin él, el host solo se comunica dentro de su propia subred.' },
-  { tema:'Refuerzo · Conceptos base', pts:1, tipo:'mc', texto:'¿Qué es el DNS y para qué sirve?', opciones:['Un sistema que asigna direcciones IP dinámicas','Un servidor que traduce nombres de dominio a direcciones IP','Un protocolo de enrutamiento','Un tipo de cableado estructurado'], resp:1, just:'El DNS (Domain Name System) traduce nombres legibles (ej. google.com) a direcciones IP, en la Capa de Aplicación.' },
-  { tema:'Refuerzo · Conceptos base', pts:1, tipo:'mc', texto:'En subnetting, ¿cómo se calcula el "salto" o incremento entre una subred y la siguiente?', opciones:['Se resta al 256 el valor del último octeto de la máscara (ej. /27 → 256−224 = 32)','Se multiplica la cantidad de hosts por 2','Se cuenta la cantidad de routers','El salto siempre es 4'], resp:0, just:'El incremento = 256 − último octeto de la máscara. Ej. /27 (255.255.255.224) → salto de 32 direcciones por subred.' }
+  { tema:'Semana 7 · Enrutamiento dinámico', pts:2, tipo:'mc', texto:'Un protocolo aprende rutas contando cuántos saltos separan cada destino, sin medir ancho de banda ni retardo. ¿A qué familia pertenece?', opciones:['Estado de enlace','Vector de distancia basado en conteo de saltos','Path-vector','Híbrido propietario de Cisco'], resp:1, just:'RIP usa vector de distancia; su métrica es el conteo de saltos (máx 15).' },
+  { tema:'Semana 7 · Enrutamiento dinámico', pts:2, tipo:'mc', texto:'Si un destino queda a 16 saltos de distancia, RIP lo da por perdido. ¿Cuál es entonces el número máximo de saltos útiles que acepta?', opciones:['15','16','31','255'], resp:0, just:'15 saltos válidos; 16 se considera red inalcanzable.' },
+  { tema:'Semana 7 · Enrutamiento dinámico', pts:2, tipo:'mc', texto:'OSPF no cuenta saltos: calcula costos según el ancho de banda y arma su árbol con un algoritmo conocido. ¿Cuál emplea?', opciones:['Bellman-Ford','DUAL','Dijkstra','Floyd-Warshall'], resp:2, just:'OSPF usa el algoritmo de Dijkstra (shortest path first).' },
+  { tema:'Semana 7 · Enrutamiento dinámico', pts:2, tipo:'mc', texto:'Cisco necesita un protocolo que combine lo mejor de vector de distancia y de estado de enlace, con convergencia rápida por el algoritmo DUAL. ¿Cuál es?', opciones:['OSPF (estándar abierto de estado de enlace)','EIGRP (híbrido de vector de distancia, propietario de Cisco, usa DUAL)','BGP (path-vector para Internet)','RIP (vector de distancia con conteo de saltos)'], resp:1, just:'EIGRP es híbrido y propietario de Cisco; usa DUAL y métrica compuesta.' },
+  { tema:'Semana 7 · Enrutamiento dinámico', pts:2, tipo:'mc', texto:'¿Qué es una dirección IP pública?', opciones:['Una dirección asignada por el router que solo funciona dentro de la red local','Una dirección única y enrutable en Internet, visible para cualquier equipo del mundo','Una dirección reservada solo para impresoras y servidores','Una dirección de prueba que no se puede configurar'], resp:1, just:'La IP pública es única y enrutable en Internet; la red mundial sabe cómo llegar a ella.' },
+  { tema:'Semana 7 · Enrutamiento dinámico', pts:2, tipo:'mc', texto:'Tras configurar el protocolo, usted quiere confirmar que el router aprendió la red 192.168.3.0. ¿Qué comando muestra las rutas instaladas?', opciones:['show ip interface brief','show ip route','show arp','debug ospf all'], resp:1, just:'show ip route muestra todas las rutas aprendidas (C, S, D, O, R...).' },
+  { tema:'Semana 7 · Enrutamiento dinámico', pts:2, tipo:'mc', texto:'Al escribir network 192.168.1.0 0.0.0.255 area 0 en OSPF, ¿qué papel cumple el valor 0.0.0.255?', opciones:['La máscara de subred','El wildcard (máscara inversa) para incluir el rango','El área de enrutamiento','El ID del proceso'], resp:1, just:'En OSPF/RIP(con máscara) y EIGRP se usan wildcards; 0.0.0.255 = /24.' },
+  { tema:'Refuerzo · Conceptos base', pts:1, tipo:'mc', texto:'Al descomponer la dirección 192.168.1.10, ¿cómo se llama cada uno de sus cuatro grupos separados por puntos?', opciones:['Octeto (un grupo de 8 bits)','Nibble (un grupo de 4 bits)','Palabra (un grupo de 16 bits)','Prefijo (un grupo de 32 bits)'], resp:0, just:'Un octeto son 8 bits. IPv4 tiene 4 octetos (32 bits totales).' },
+  { tema:'Refuerzo · Conceptos base', pts:1, tipo:'mc', texto:'Al configurar una impresora que no debe ser visible desde Internet, ¿qué diferencia debe considerar entre IP pública y privada?', opciones:['La pública es enrutable en Internet y única; la privada solo es válida dentro de la red local (RFC 1918)','La privada es pública pero más lenta','La pública se asigna por DHCP y la privada es fija','No existe diferencia, son sinónimos'], resp:0, just:'IP pública = única y enrutable en Internet. IP privada = RFC 1918 (10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16), solo interna.' },
+  { tema:'Refuerzo · Conceptos base', pts:1, tipo:'mc', texto:'Usted está en Router(config-if)# y necesita iniciar EIGRP con AS 100. ¿Cómo procede desde ese punto?', opciones:['Desde el modo privilegiado (enable)','Desde el modo de configuración global con "router eigrp 100"','Desde la interfaz Gig0/0','Desde la consola de una PC'], resp:1, just:'Se entra en modo global (Router(config)#) y se ejecuta "router eigrp <AS>".' },
+  { tema:'Refuerzo · Conceptos base', pts:1, tipo:'mc', texto:'Un técnico describe el recorrido del bit desde el cable hasta la aplicación. ¿En qué orden correcto quedan las siete capas?', opciones:['Física, Enlace de Datos, Red, Transporte, Sesión, Presentación, Aplicación','Física, Red, Enlace de Datos, Transporte, Sesión, Presentación, Aplicación','Aplicación, Presentación, Sesión, Transporte, Red, Enlace de Datos, Física','Enlace de Datos, Física, Red, Transporte, Aplicación, Sesión, Presentación'], resp:0, just:'El orden correcto es 1-Física → 7-Aplicación: Física, Enlace, Red, Transporte, Sesión, Presentación, Aplicación.' },
+  { tema:'Refuerzo · Conceptos base', pts:1, tipo:'mc', texto:'Una interfaz tiene máscara /26. ¿Qué significa exactamente ese número en la dirección?', opciones:['Que los primeros 26 bits son de red y quedan 6 bits para hosts (62 hosts útiles por subred)','Que la red tiene 26 hosts posibles','Que hay 26 subredes distintas','Que se usa en IPv6'], resp:0, just:'/26 = 26 bits de red, 6 de host → 2⁶−2 = 62 hosts útiles por subred.' },
+  { tema:'Refuerzo · Conceptos base', pts:1, tipo:'mc', texto:'Una dirección comienza con 172 (Clase B). ¿Qué rango de primer octeto caracteriza tradicionalmente a esa clase?', opciones:['1 – 126','128 – 191','192 – 223','224 – 239'], resp:1, just:'Clase A: 1-126, Clase B: 128-191, Clase C: 192-223, Clase D (multicast): 224-239.' },
+  { tema:'Refuerzo · Conceptos base', pts:1, tipo:'mc', texto:'Debe crear 6 subredes y quiere saber cuántos bits tomarle al campo de host. ¿Qué cálculo le da la respuesta correcta?', opciones:['Se usa 2ⁿ ≥ número de subredes necesarias y se despeja el menor n','Se suman 8 bits por cada subred','Se divide el total de hosts entre la máscara','Se resta 256 al último octeto'], resp:0, just:'Se busca el menor n tal que 2ⁿ sea mayor o igual a la cantidad de subredes; ese n son los bits prestados.' },
+  { tema:'Refuerzo · Conceptos base', pts:1, tipo:'mc', texto:'Una PC con IP y máscara correctas hace ping a un vecino de su subred, pero no llega a 8.8.8.8. ¿Qué le falta configurar?', opciones:['La dirección del gateway (puerta de enlace), para salir hacia otras redes','La dirección MAC de su tarjeta de red','El nombre de dominio del equipo','La máscara /26 de la subred'], resp:0, just:'El gateway es la dirección IP del router de salida; sin él, el host solo se comunica dentro de su propia subred.' },
+  { tema:'Refuerzo · Conceptos base', pts:1, tipo:'mc', texto:'Usted escribe google.com y la red necesita una dirección IP para abrir la conexión. ¿Qué sistema resuelve ese nombre?', opciones:['El DNS (Domain Name System), que traduce nombres de dominio a direcciones IP','El DHCP, que asigna direcciones IP automáticamente','El ARP, que resuelve direcciones IP a direcciones MAC','El TCP, que entrega los datos en orden y con confirmación'], resp:0, just:'El DNS traduce nombres legibles (ej. google.com) a direcciones IP, en la Capa de Aplicación.' },
+  { tema:'Refuerzo · Conceptos base', pts:1, tipo:'mc', texto:'Con máscara /27, la segunda subred inicia 32 direcciones después de la primera. ¿Cómo se obtiene ese salto de 32?', opciones:['Se resta al 256 el valor del último octeto de la máscara (ej. /27 → 256−224 = 32)','Se multiplica la cantidad de hosts por 2','Se cuenta la cantidad de routers','El salto siempre es 4'], resp:0, just:'El incremento = 256 − último octeto de la máscara. Ej. /27 (255.255.255.224) → salto de 32 direcciones por subred.' }
 ];
 
 // ---- Caso de subnetting ------------------------------------------
 const SUBNET = [
-  { id:'a', pts:2, texto:'¿Cuántos bits se deben prestar de la porción de host para crear las 5 subredes?', respuesta:'3' },
-  { id:'b', pts:2, texto:'Indique la nueva máscara de subred (notación /X)', respuesta:'/27' },
-  { id:'c', pts:2, texto:'¿Cuántos hosts útiles hay por subred?', respuesta:'30' },
-  { id:'d', pts:1, texto:'Dirección de la subred 1 (sucursal A):', respuesta:'200.10.20.0' },
-  { id:'e', pts:1, texto:'Rango de hosts de la subred 1:', respuesta:'200.10.20.1 a 200.10.20.30' },
-  { id:'f', pts:1, texto:'Dirección de broadcast de la subred 1:', respuesta:'200.10.20.31' },
-  { id:'g', pts:1, texto:'Dirección de la subred 2 (sucursal B):', respuesta:'200.10.20.32' }
+  { id:'a', pts:2, texto:'¿Cuántos bits se deben prestar de la porción de host para crear las 4 subredes?', respuesta:'2' },
+  { id:'b', pts:2, texto:'Indique la nueva máscara de subred (notación /X)', respuesta:'/26' },
+  { id:'c', pts:2, texto:'¿Cuántos hosts útiles hay por subred?', respuesta:'62' },
+  { id:'d', pts:1, texto:'Dirección de la subred 1 (sede Central):', respuesta:'172.16.50.0' },
+  { id:'e', pts:1, texto:'Rango de hosts de la subred 1:', respuesta:'172.16.50.1 a 172.16.50.62' },
+  { id:'f', pts:1, texto:'Dirección de broadcast de la subred 1:', respuesta:'172.16.50.63' },
+  { id:'g', pts:1, texto:'Dirección de la subred 2 (sede Norte):', respuesta:'172.16.50.64' }
 ];
 
 // ---- Casos prácticos ---------------------------------------------
 const PRACTICOS = [
   {
-    titulo:'Caso 1 · RIP (RIP v2)', pts:13, protocolo:'RIP v2',
-    topologia:`[PC1] ── G0/0     R1     G0/1 ── G0/0     R2     G0/1 ── G0/0     R3     G0/1 ── [PC2]
-192.168.1.10/24     .1    10.0.0.1/30──10.0.0.2/30  10.0.1.1/30──10.0.1.2/30   .1   192.168.3.10/24`,
+    titulo:'Caso 1 · RIP (RIP v2)', pts:13, protocolo:'RIP v2 · topología en línea',
+    svg:`<svg viewBox="0 0 800 215" class="w-full h-auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Topologia en linea: PC1 conectado a R1, R1 a R2, R2 a R3 y R3 a PC2">
+      <rect width="800" height="215" fill="#f8fafc" rx="6"/>
+      <g stroke="#334155" stroke-width="2">
+        <line x1="87" y1="120" x2="135" y2="120"/>
+        <line x1="228" y1="120" x2="330" y2="120"/>
+        <line x1="423" y1="120" x2="525" y2="120"/>
+        <line x1="618" y1="120" x2="712" y2="120"/>
+      </g>
+      <g font-family="ui-sans-serif, system-ui, sans-serif">
+        <rect x="15" y="98" width="72" height="44" rx="4" fill="#eff7fd" stroke="#1576b4" stroke-width="1.5"/>
+        <text x="51" y="125" font-size="12" font-weight="700" fill="#164364" text-anchor="middle">PC1</text>
+        <rect x="135" y="92" width="93" height="56" rx="8" fill="#1576b4"/>
+        <text x="181" y="126" font-size="16" font-weight="700" fill="#ffffff" text-anchor="middle">R1</text>
+        <rect x="330" y="92" width="93" height="56" rx="8" fill="#1576b4"/>
+        <text x="376" y="126" font-size="16" font-weight="700" fill="#ffffff" text-anchor="middle">R2</text>
+        <rect x="525" y="92" width="93" height="56" rx="8" fill="#1576b4"/>
+        <text x="571" y="126" font-size="16" font-weight="700" fill="#ffffff" text-anchor="middle">R3</text>
+        <rect x="712" y="98" width="72" height="44" rx="4" fill="#eff7fd" stroke="#1576b4" stroke-width="1.5"/>
+        <text x="748" y="125" font-size="12" font-weight="700" fill="#164364" text-anchor="middle">PC2</text>
+
+        <g font-family="ui-monospace, Menlo, monospace" font-size="11" fill="#164364" text-anchor="middle">
+          <text x="111" y="78">192.168.1.0/24</text>
+          <text x="279" y="78">10.0.0.0/30</text>
+          <text x="474" y="78">10.0.1.0/30</text>
+          <text x="665" y="78">192.168.3.0/24</text>
+        </g>
+        <g font-family="ui-monospace, Menlo, monospace" font-size="10" fill="#125e92" text-anchor="middle">
+          <text x="111" y="168">GW R1 .1 · PC1 .10</text>
+          <text x="279" y="168">R1 G0/1 .1 ⇄ R2 G0/0 .2</text>
+          <text x="474" y="168">R2 G0/1 .1 ⇄ R3 G0/0 .2</text>
+          <text x="665" y="168">GW R3 .1 · PC2 .10</text>
+        </g>
+        <text x="400" y="200" font-size="10" fill="#64748b" text-anchor="middle">Enlace en línea: dos redes punto a punto /30 entre routers y una LAN /24 en cada extremo.</text>
+      </g>
+    </svg>`,
     items:[
-      { pts:3, q:'Active RIP versión 2 en los tres routers. Escriba los comandos (desde el modo de configuración global).', r:'conf t → router rip → version 2' },
-      { pts:4, q:'En R1 declare las redes que RIP debe anunciar (LAN propia y enlace), con sus wildcards.', r:'R1: network 192.168.1.0 y network 10.0.0.0 0.0.0.3' },
+      { pts:3, q:'Active RIP versión 2 en los tres routers. Escriba los comandos completos tal y como los usaría en el CLI (modo de configuración global).', r:'conf t, router rip, version 2' },
+      { pts:4, q:'En R1 declare las redes que RIP debe anunciar (LAN propia y enlace punto a punto), con sus wildcards.', r:'network 192.168.1.0, network 10.0.0.0 0.0.0.3' },
       { pts:2, q:'Comando para verificar las rutas RIP aprendidas en R1.', r:'show ip route rip' },
-      { pts:4, q:'¿Qué comando evita que RIP resuma automáticamente y por qué es necesario aquí? Razone con métrica.', r:'"no auto-summary". Con rutas discontiguas (192.168.1.0 / 192.168.3.0 separadas por 10.x.x.x) la sumarización automática puede producir rutas incorrectas/no anunciadas.' }
+      { pts:4, q:'¿Qué comando evita que RIP resuma automáticamente y por qué es necesario aquí? Razone con métrica.', r:'no auto-summary, discontiguas | no auto summary, discontiguas' }
     ]
   },
   {
-    titulo:'Caso 2 · OSPF', pts:13, protocolo:'OSPF (área única)',
-    topologia:`[PC1] ── G0/0     R1     G0/1 ── G0/0     R2     G0/1 ── G0/0     R3     G0/1 ── [PC2]
-192.168.1.10/24     .1    10.0.0.1/30──10.0.0.2/30  10.0.1.1/30──10.0.1.2/30   .1   192.168.3.10/24`,
+    titulo:'Caso 2 · OSPF', pts:13, protocolo:'OSPF · topología en triángulo',
+    svg:`<svg viewBox="0 0 800 430" class="w-full h-auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Topologia en triangulo: R1, R2 y R3 conectados entre si, con una LAN en cada router">
+      <rect width="800" height="430" fill="#f8fafc" rx="6"/>
+      <text x="20" y="24" font-size="13" font-weight="700" fill="#164364" font-family="ui-sans-serif, system-ui, sans-serif">Topología en triángulo: tres enlaces en el área 0 (rutas redundantes)</text>
+
+      <g stroke="#334155" stroke-width="2">
+        <line x1="400" y1="84" x2="400" y2="112"/>
+        <line x1="370" y1="168" x2="145" y2="250"/>
+        <line x1="430" y1="168" x2="655" y2="250"/>
+        <line x1="210" y1="278" x2="590" y2="278"/>
+        <line x1="145" y1="306" x2="155" y2="340"/>
+        <line x1="655" y1="306" x2="665" y2="340"/>
+      </g>
+
+      <g font-family="ui-sans-serif, system-ui, sans-serif">
+        <rect x="355" y="44" width="90" height="40" rx="4" fill="#eff7fd" stroke="#1576b4" stroke-width="1.5"/>
+        <text x="400" y="69" font-size="12" font-weight="700" fill="#164364" text-anchor="middle">PC1</text>
+
+        <rect x="335" y="112" width="130" height="56" rx="8" fill="#1576b4"/>
+        <text x="400" y="146" font-size="16" font-weight="700" fill="#ffffff" text-anchor="middle">R1</text>
+
+        <rect x="80" y="250" width="130" height="56" rx="8" fill="#1576b4"/>
+        <text x="145" y="284" font-size="16" font-weight="700" fill="#ffffff" text-anchor="middle">R2</text>
+
+        <rect x="590" y="250" width="130" height="56" rx="8" fill="#1576b4"/>
+        <text x="655" y="284" font-size="16" font-weight="700" fill="#ffffff" text-anchor="middle">R3</text>
+
+        <rect x="110" y="340" width="90" height="40" rx="4" fill="#eff7fd" stroke="#1576b4" stroke-width="1.5"/>
+        <text x="155" y="365" font-size="12" font-weight="700" fill="#164364" text-anchor="middle">PC2</text>
+
+        <rect x="620" y="340" width="90" height="40" rx="4" fill="#eff7fd" stroke="#1576b4" stroke-width="1.5"/>
+        <text x="665" y="365" font-size="12" font-weight="700" fill="#164364" text-anchor="middle">PC3</text>
+
+        <g font-family="ui-monospace, Menlo, monospace" font-size="10" fill="#164364">
+          <text x="388" y="100" text-anchor="end">192.168.1.0/24</text>
+          <text x="412" y="100">GW R1 .1</text>
+          <text x="300" y="196">10.0.0.0/30 (R1 ⇄ R2)</text>
+          <text x="452" y="196">10.0.2.0/30 (R1 ⇄ R3)</text>
+          <text x="400" y="270" text-anchor="middle">10.0.1.0/30 (R2 ⇄ R3)</text>
+          <text x="155" y="400" text-anchor="middle">192.168.2.0/24</text>
+          <text x="155" y="416" text-anchor="middle" fill="#64748b">GW R2 .1 · PC2 .10</text>
+          <text x="665" y="400" text-anchor="middle">192.168.3.0/24</text>
+          <text x="665" y="416" text-anchor="middle" fill="#64748b">GW R3 .1 · PC3 .10</text>
+        </g>
+      </g>
+    </svg>`,
     items:[
-      { pts:2, q:'Inicie OSPF en los routers (indicar también el ID de proceso).', r:'router ospf 1' },
-      { pts:4, q:'En R1 declare sus redes en OSPF dentro del área 0 (con wildcards).', r:'network 192.168.1.0 0.0.0.255 area 0 y network 10.0.0.0 0.0.0.3 area 0' },
-      { pts:3, q:'Comandos para verificar el vecino OSPF y las rutas aprendidas.', r:'show ip ospf neighbor y show ip route ospf' },
-      { pts:4, q:'Explique brevemente la métrica de OSPF y qué algoritmo emplea.', r:'Costo = 10⁸/ancho de banda (menor mejor); algoritmo de Dijkstra (SPF).' }
+      { pts:2, q:'Inicie OSPF en los tres routers (indicar también el ID de proceso).', r:'router ospf 1' },
+      { pts:4, q:'En R1 declare en el área 0 todas sus redes (LAN y los dos enlaces del triángulo), con sus wildcards.', r:'network 192.168.1.0 0.0.0.255 area 0, network 10.0.0.0 0.0.0.3 area 0, network 10.0.2.0 0.0.0.3 area 0' },
+      { pts:3, q:'Comandos para verificar el vecino OSPF y las rutas aprendidas.', r:'show ip ospf neighbor, show ip route ospf' },
+      { pts:4, q:'Explique brevemente la métrica de OSPF y qué algoritmo emplea.', r:'costo, dijkstra | costo, ancho de banda, dijkstra' }
     ]
   },
   {
-    titulo:'Caso 3 · EIGRP', pts:14, protocolo:'EIGRP',
-    topologia:`[PC1] ── G0/0     R1     G0/1 ── G0/0     R2     G0/1 ── G0/0     R3     G0/1 ── [PC2]
-192.168.1.10/24     .1    10.0.0.1/30──10.0.0.2/30  10.0.1.1/30──10.0.1.2/30   .1   192.168.3.10/24`,
+    titulo:'Caso 3 · EIGRP', pts:14, protocolo:'EIGRP · doble enlace',
+    svg:`<svg viewBox="0 0 800 250" class="w-full h-auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Topologia con doble enlace paralelo entre R1 y R2 y una LAN en cada extremo">
+      <rect width="800" height="250" fill="#f8fafc" rx="6"/>
+      <text x="20" y="24" font-size="13" font-weight="700" fill="#164364" font-family="ui-sans-serif, system-ui, sans-serif">Doble enlace entre R1 y R2: respaldo con sucesor factible (Feasible Successor)</text>
+
+      <g stroke="#334155" stroke-width="2">
+        <line x1="87" y1="120" x2="135" y2="120"/>
+        <line x1="245" y1="118" x2="555" y2="118"/>
+        <line x1="245" y1="144" x2="555" y2="144"/>
+        <line x1="665" y1="120" x2="713" y2="120"/>
+      </g>
+
+      <g font-family="ui-sans-serif, system-ui, sans-serif">
+        <rect x="15" y="98" width="72" height="44" rx="4" fill="#eff7fd" stroke="#1576b4" stroke-width="1.5"/>
+        <text x="51" y="125" font-size="12" font-weight="700" fill="#164364" text-anchor="middle">PC1</text>
+
+        <rect x="135" y="88" width="110" height="64" rx="8" fill="#1576b4"/>
+        <text x="190" y="125" font-size="16" font-weight="700" fill="#ffffff" text-anchor="middle">R1</text>
+
+        <rect x="555" y="88" width="110" height="64" rx="8" fill="#1576b4"/>
+        <text x="610" y="125" font-size="16" font-weight="700" fill="#ffffff" text-anchor="middle">R2</text>
+
+        <rect x="713" y="98" width="72" height="44" rx="4" fill="#eff7fd" stroke="#1576b4" stroke-width="1.5"/>
+        <text x="749" y="125" font-size="12" font-weight="700" fill="#164364" text-anchor="middle">PC2</text>
+
+        <g font-family="ui-monospace, Menlo, monospace" font-size="11" fill="#164364" text-anchor="middle">
+          <text x="111" y="80">192.168.1.0/24</text>
+          <text x="689" y="80">192.168.2.0/24</text>
+          <text x="400" y="110">Enlace 1 · 10.0.0.0/30</text>
+          <text x="400" y="166">Enlace 2 · 10.0.1.0/30</text>
+        </g>
+        <g font-family="ui-monospace, Menlo, monospace" font-size="10" fill="#125e92" text-anchor="middle">
+          <text x="111" y="192">GW R1 .1 · PC1 .10</text>
+          <text x="689" y="192">GW R2 .1 · PC2 .10</text>
+        </g>
+        <text x="400" y="225" font-size="10" fill="#64748b" text-anchor="middle">Si falla el enlace principal, EIGRP conmuta al respaldo sin interrumpir la red.</text>
+      </g>
+    </svg>`,
     items:[
-      { pts:2, q:'Inicie EIGRP con número de sistema autónomo 100.', r:'router eigrp 100' },
-      { pts:4, q:'En R1 declare sus redes con sus wildcards.', r:'network 192.168.1.0 y network 10.0.0.0 0.0.0.3' },
-      { pts:3, q:'Comandos para verificar los vecinos EIGRP y las rutas aprendidas.', r:'show ip eigrp neighbors y show ip route eigrp' },
-      { pts:5, q:'Mencione la métrica compuesta de EIGRP y el algoritmo que utiliza. ¿Qué ventaja ofrece frente a RIP en convergencia?', r:'Métrica compuesta: ancho de banda + retardo (+ carga + confiabilidad). Algoritmo DUAL. Convergencia instantánea con respaldos (Feasible Successor).' }
+      { pts:2, q:'Inicie EIGRP con número de sistema autónomo 100 en ambos routers.', r:'router eigrp 100' },
+      { pts:4, q:'En R1 declare sus redes (LAN y los dos enlaces en paralelo), con sus wildcards.', r:'network 192.168.1.0, network 10.0.0.0 0.0.0.3, network 10.0.1.0 0.0.0.3' },
+      { pts:3, q:'Comandos para verificar los vecinos EIGRP y las rutas aprendidas.', r:'show ip eigrp neighbors, show ip route eigrp' },
+      { pts:5, q:'Mencione la métrica compuesta de EIGRP y el algoritmo que utiliza. ¿Qué ventaja ofrece frente a RIP con este doble enlace?', r:'ancho de banda, retardo, dual, feasible successor | ancho de banda, retardo, dual, sucesor factible' }
     ]
   }
 ];
+
+/* ================================================================
+   ORDEN ALEATORIO — se re-baraja en cada carga del examen:
+   · preguntas de cada semana (los encabezados por semana se conservan)
+   · opciones de respuesta de cada pregunta (se recalcula la correcta)
+   · los 7 ítems de subnetting y los 3 casos prácticos, completos
+================================================================ */
+function barajar(a){
+  const r = a.slice();
+  for (let i = r.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    const t = r[i]; r[i] = r[j]; r[j] = t;
+  }
+  return r;
+}
+(function barajarExamen(){
+  TEORIA.forEach(q=>{
+    const ord = barajar(q.opciones.map((_, i) => i));
+    const correcta = ord.indexOf(q.resp);
+    q.opciones = ord.map(i => q.opciones[i]);
+    q.resp = correcta;
+  });
+  const secciones = [...new Set(TEORIA.map(q => q.tema))];
+  const mezclado = [].concat(...secciones.map(t => barajar(TEORIA.filter(q => q.tema === t))));
+  TEORIA.splice(0, TEORIA.length, ...mezclado);
+  SUBNET.splice(0, SUBNET.length, ...barajar(SUBNET));
+  PRACTICOS.splice(0, PRACTICOS.length, ...barajar(PRACTICOS));
+  PRACTICOS.forEach((c, i) => { c.titulo = c.titulo.replace(/^Caso \d+/, 'Caso ' + (i + 1)); });
+})();
 
 /* ================================================================
    RENDER
@@ -375,7 +659,10 @@ function renderPracticos(){
         <span class="text-xs bg-ucr-200 text-ucr-900 px-2 py-1 rounded font-semibold">${esc(c.protocolo)}</span>
       </div>
       <div class="p-5">
-        <pre class="mono bg-slate-900 text-green-300 text-xs sm:text-sm rounded p-4 overflow-x-auto">${esc(c.topologia)}</pre>
+        <figure class="border border-slate-200 rounded p-3 bg-white">
+          <figcaption class="text-xs font-bold uppercase tracking-wide text-slate-500 mb-2">Imagen guía · topología a construir en Packet Tracer</figcaption>
+          ${c.svg}
+        </figure>
         <div class="mt-4 space-y-4">`;
         c.items.forEach((it, ii)=>{
           acc += `<div>
@@ -400,17 +687,22 @@ let desbloqueado = false;
 // Normalización por defecto de una respuesta escrita
 function normalizar(s){
   return (s||'').toString().trim().toLowerCase()
+    .replace(/[→>=|/]/g,' ')
+    .replace(/[-–—]/g,'a')
     .replace(/\s+/g,' ')
     .replace(/[.,;:()]/g,'')
-    .replace(/^\/+/,'');
+    .trim();
 }
 
 function esCorrectaTexto(esperado, valor){
   if (!valor) return false;
-  const e = normalizar(esperado);
   const v = normalizar(valor);
-  if (e === v) return true;
-  return e.split(' ').every(pal => v.includes(pal));
+  if (!v) return false;
+  return String(esperado).split('|').map(a=>a.trim()).filter(Boolean).some(a=>{
+    const e = normalizar(a);
+    if (e === v) return true;
+    return e.split(' ').filter(Boolean).every(pal => v.includes(pal));
+  });
 }
 
 function calcularPI(){
@@ -455,27 +747,230 @@ function calcularPIII(){
   return { pts:ptsIII, total:totalIII };
 }
 
+function detalleRetro(){
+  const teoria = TEORIA.map((p, i)=>{
+    let ok=false, selIdx=null, selTxt='';
+    if (p.tipo==='mc'){
+      const sel = document.querySelector(`input[name="t${i}"]:checked`);
+      if (sel){ selIdx = parseInt(sel.value); selTxt = p.opciones[selIdx]; }
+      ok = selIdx === p.resp;
+    } else {
+      const txt = document.querySelector(`input[data-theory="${i}"][type="text"]`);
+      selTxt = txt ? txt.value.trim() : '';
+      ok = esCorrectaTexto(p.resp, selTxt);
+    }
+    return { i, p, ok, selIdx, selTxt,
+             correcta: p.tipo==='mc' ? p.opciones[p.resp] : p.resp,
+             letraSel: (p.tipo==='mc' && selIdx!==null) ? opcionesLetra(selIdx) : null,
+             letraOk : p.tipo==='mc' ? opcionesLetra(p.resp) : null };
+  });
+  const subnet = SUBNET.map((s, i)=>{
+    const inp = document.querySelector(`input[data-subnet="${i}"]`);
+    const v = inp ? inp.value.trim() : '';
+    return { i, s, valor:v, ok: esCorrectaTexto(s.respuesta, v) };
+  });
+  const practicos = PRACTICOS.map((c, ci)=>({ c, ci, items: c.items.map((it, ii)=>{
+    const ta = document.querySelector(`textarea[data-caso="${ci}"][data-item="${ii}"]`);
+    const v = ta ? ta.value.trim() : '';
+    const ok = esCorrectaTexto(it.r, v);
+    return { it, ii, valor:v, ok, ptsOk: ok ? it.pts : 0 };
+  })}));
+  return { teoria, subnet, practicos };
+}
+
+function resumenRetro(d){
+  const pct = (a,b)=> b ? Math.round(a / b * 100) : 0;
+  const tOK = d.teoria.filter(x=>x.ok).length;
+  const sOK = d.subnet.filter(x=>x.ok).length;
+  const pOK = d.practicos.reduce((a,c)=>a + c.items.filter(x=>x.ok).length, 0);
+  const pTotal = d.practicos.reduce((a,c)=>a + c.items.length, 0);
+  const pPts = d.practicos.reduce((a,c)=>a + c.items.reduce((x,i)=>x + i.ptsOk, 0), 0);
+  const pPtsTotal = d.practicos.reduce((a,c)=>a + c.c.pts, 0);
+  const iPts = d.teoria.reduce((a,x)=>a + (x.ok ? x.p.pts : 0), 0);
+  const iTot = d.teoria.reduce((a,x)=>a + x.p.pts, 0);
+  const iiPts = d.subnet.reduce((a,x)=>a + (x.ok ? x.s.pts : 0), 0);
+  const iiTot = d.subnet.reduce((a,x)=>a + x.s.pts, 0);
+  const pts = iPts + iiPts + pPts;
+  return {
+    pct, pts, nota: pts,
+    teoria: { pts:iPts, total:iTot, ok:tOK, totalN:d.teoria.length, pct:pct(iPts,iTot) },
+    subnet: { pts:iiPts, total:iiTot, ok:sOK, totalN:d.subnet.length, pct:pct(iiPts,iiTot) },
+    practicos: { pts:pPts, total:pPtsTotal, ok:pOK, totalN:pTotal, pct:pct(pPts,pPtsTotal) },
+    global: pct(pts, 100)
+  };
+}
+
+/* Respuestas crudas (texto escrito) para que el docente las revise en admin.html */
+function construirRespuestas(){
+  const d = detalleRetro();
+  return {
+    teoria: d.teoria.map(x=>({
+      n: x.i + 1,
+      ok: x.ok,
+      pregunta: x.p.texto,
+      su: x.p.tipo==='mc' ? (x.letraSel ? x.letraSel + ' · ' + x.selTxt : '') : x.selTxt,
+      esperada: x.p.tipo==='mc' ? x.letraOk + ' · ' + x.correcta : x.correcta,
+      just: x.p.just || ''
+    })),
+    subnet: d.subnet.map(x=>({
+      n: x.i + 1,
+      ok: x.ok,
+      pregunta: x.s.texto,
+      su: x.valor,
+      esperada: x.s.respuesta
+    })),
+    practicos: d.practicos.map(c=>({
+      caso: c.c.titulo,
+      items: c.items.map(i=>({
+        ok: i.ok,
+        pts: i.ptsOk,
+        ptsTotal: i.it.pts,
+        pregunta: i.it.q,
+        su: i.valor,
+        esperada: i.it.r
+      }))
+    }))
+  };
+}
+
 function mostrarResultado() {
-  const rI = calcularPI();
-  const rII = calcularPII();
-  const rIII = calcularPIII();
-  const pts = rI.pts + rII.pts + rIII.pts;
+  const d = detalleRetro();
+  const r = resumenRetro(d);
 
   let html = `<div class="print-block bg-ucr-900 text-white rounded-md p-5 mt-6">
     <div class="flex items-center justify-between flex-wrap gap-3">
       <h3 class="font-bold text-lg">Resumen de calificación</h3>
-      <span class="text-2xl font-bold">${pts} / 100 pts</span>
+      <div class="text-right">
+        <span class="text-2xl font-bold">${r.pts} / 100 pts</span>
+        <p class="text-ucr-200 text-sm">${r.global}% · Nota ${r.nota} (escala 0–100)</p>
+      </div>
     </div>
     <div class="mt-3 grid grid-cols-3 gap-3 text-sm">
-      <div class="text-center bg-ucr-800 rounded p-3"><p class="text-ucr-200 text-xs uppercase">Teoría</p><p class="font-bold">${rI.pts} / ${rI.total}</p></div>
-      <div class="text-center bg-ucr-800 rounded p-3"><p class="text-ucr-200 text-xs uppercase">Subnetting</p><p class="font-bold">${rII.pts} / ${rII.total}</p></div>
-      <div class="text-center bg-ucr-800 rounded p-3"><p class="text-ucr-200 text-xs uppercase">Prácticos</p><p class="font-bold">${rIII.pts} / ${rIII.total}</p></div>
+      <div class="text-center bg-ucr-800 rounded p-3">
+        <p class="text-ucr-200 text-xs uppercase">Parte I · Teoría</p>
+        <p class="font-bold text-lg">${r.teoria.pts} / ${r.teoria.total}</p>
+        <p class="text-ucr-200 text-xs">${r.teoria.pct}% · ${r.teoria.ok} de ${r.teoria.totalN} correctas</p>
+      </div>
+      <div class="text-center bg-ucr-800 rounded p-3">
+        <p class="text-ucr-200 text-xs uppercase">Parte II · Subnetting</p>
+        <p class="font-bold text-lg">${r.subnet.pts} / ${r.subnet.total}</p>
+        <p class="text-ucr-200 text-xs">${r.subnet.pct}% · ${r.subnet.ok} de ${r.subnet.totalN} ítems</p>
+      </div>
+      <div class="text-center bg-ucr-800 rounded p-3">
+        <p class="text-ucr-200 text-xs uppercase">Parte III · Prácticos</p>
+        <p class="font-bold text-lg">${r.practicos.pts} / ${r.practicos.total}</p>
+        <p class="text-ucr-200 text-xs">${r.practicos.pct}% · ${r.practicos.ok} de ${r.practicos.totalN} incisos</p>
+      </div>
+    </div>
+    <div class="mt-4 flex flex-wrap items-center gap-3">
+      <button id="btnRetro" type="button" class="no-print bg-white hover:bg-slate-100 text-ucr-900 text-sm font-semibold px-4 py-2 rounded">
+        Descargar retroalimentación (HTML)
+      </button>
+      <span class="no-print text-xs text-ucr-200">Le indica cuáles estuvieron bien y explica cada una de las incorrectas, parte por parte.</span>
     </div>
   </div>`;
 
   const zona = document.getElementById('zonaResultado');
-  if (!zona){ const d = document.createElement('div'); d.id='zonaResultado'; d.innerHTML = html; main.appendChild(d); }
+  if (!zona){ const d2 = document.createElement('div'); d2.id='zonaResultado'; d2.innerHTML = html; main.appendChild(d2); }
   else { zona.innerHTML = html; }
+  document.getElementById('btnRetro').addEventListener('click', descargarRetroalimentacion);
+}
+
+function escRetro(s){ return esc(s == null ? '' : s); }
+
+function descargarRetroalimentacion(){
+  const d = detalleRetro();
+  const r = resumenRetro(d);
+  const nombre = (document.getElementById('nombre')?.value || '').trim();
+  const carnet = (document.getElementById('carnet')?.value || '').trim();
+  const grupo  = (document.getElementById('grupo')?.value  || '').trim();
+  const fecha  = new Date().toLocaleString('es-CR');
+  const malas = d.teoria.filter(x=>!x.ok);
+  const bienes = d.teoria.filter(x=>x.ok).map(x=>x.i+1);
+
+  let h = `<!DOCTYPE html><html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Retroalimentación · Examen I IF011 Redes</title>
+<style>
+ body{font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:#f1f5f9;color:#0f172a;margin:0;padding:24px;line-height:1.5}
+ .hoja{max-width:860px;margin:0 auto;background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:28px}
+ h1{font-size:20px;margin:0 0 4px;color:#164364} h2{font-size:16px;margin:26px 0 8px;color:#164364;border-bottom:2px solid #dbeafe;padding-bottom:4px}
+ h3{font-size:14px;margin:16px 0 6px} .sub{color:#64748b;font-size:13px;margin:0}
+ .nota{background:#164364;color:#fff;border-radius:8px;padding:14px 18px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-top:16px}
+ .nota b{font-size:26px} .nota span{font-size:13px;color:#cfe4f3}
+ table{width:100%;border-collapse:collapse;font-size:13px;margin-top:8px}
+ th,td{border:1px solid #e2e8f0;padding:7px 9px;text-align:left} th{background:#f8fafc}
+ .ok{color:#15803d;font-weight:700} .mal{color:#b91c1c;font-weight:700}
+ .item{border:1px solid #e2e8f0;border-radius:8px;padding:10px 12px;margin:8px 0;font-size:13px}
+ .item.malo{border-left:4px solid #dc2626; background:#fef2f2}
+ .item .q{font-weight:600} .kv{margin-top:6px} .kv b{color:#334155}
+ .resp-ok{color:#15803d} .muted{color:#64748b}
+ .pie{margin-top:22px;font-size:11px;color:#94a3b8;text-align:center}
+</style></head><body><div class="hoja">
+<h1>Retroalimentación · Examen I · IF011 Redes de Computadoras</h1>
+<p class="sub">${escRetro(nombre)}${carnet ? ' · Carné ' + escRetro(carnet) : ''}${grupo ? ' · Grupo ' + escRetro(grupo) : ''} · ${fecha}</p>
+<div class="nota"><div><span>Nota final (escala 0–100)</span><br><b>${r.nota} / 100</b></div>
+<div style="text-align:right"><span>Puntaje</span><br><b>${r.pts} pts · ${r.global}%</b></div></div>
+<table><thead><tr><th>Parte</th><th>Obtenido</th><th>Total</th><th>%</th><th>Resultado</th></tr></thead><tbody>
+<tr><td>I · Teoría</td><td>${r.teoria.pts} pts</td><td>${r.teoria.total} pts</td><td>${r.teoria.pct}%</td><td>${r.teoria.ok} correctas · ${r.teoria.totalN - r.teoria.ok} incorrectas</td></tr>
+<tr><td>II · Subnetting</td><td>${r.subnet.pts} pts</td><td>${r.subnet.total} pts</td><td>${r.subnet.pct}%</td><td>${r.subnet.ok} de ${r.subnet.totalN} ítems correctos</td></tr>
+<tr><td>III · Prácticos</td><td>${r.practicos.pts} pts</td><td>${r.practicos.total} pts</td><td>${r.practicos.pct}%</td><td>${r.practicos.ok} de ${r.practicos.totalN} incisos correctos</td></tr>
+</tbody></table>`;
+
+  // ---- Parte I ----
+  h += `<h2>Parte I · Teoría — ${r.teoria.ok} buenas de ${r.teoria.totalN}</h2>`;
+  if (bienes.length) h += `<p class="sub"><b class="ok">Correctas (${bienes.length}):</b> ${bienes.join(', ')}.</p>`;
+  if (!malas.length) h += `<p class="ok">¡Excelente! No tiene preguntas incorrectas en esta parte.</p>`;
+  malas.forEach(x=>{
+    const su = x.p.tipo==='mc'
+      ? (x.letraSel ? `${x.letraSel} · ${escRetro(x.selTxt)}` : '<span class="mal">Sin responder</span>')
+      : (x.selTxt ? escRetro(x.selTxt) : '<span class="mal">Sin responder</span>');
+    h += `<div class="item malo">
+      <p class="q"><span class="mal">✗ Incorrecta</span> · Pregunta ${x.i+1} · ${escRetro(x.p.tema)} (${x.p.pts} pts)</p>
+      <p>${escRetro(x.p.texto)}</p>
+      <p class="kv"><b>Su respuesta:</b> ${su}</p>
+      <p class="kv"><b>Respuesta correcta:</b> <span class="resp-ok">${x.p.tipo==='mc' ? x.letraOk + ' · ' : ''}${escRetro(x.correcta)}</span></p>
+      <p class="kv muted"><b>Por qué:</b> ${escRetro(x.p.just)}</p>
+    </div>`;
+  });
+
+  // ---- Parte II ----
+  h += `<h2>Parte II · Subnetting — ${r.subnet.ok} de ${r.subnet.totalN} ítems</h2>`;
+  d.subnet.forEach(x=>{
+    h += `<div class="item ${x.ok ? '' : 'malo'}">
+      <p class="q">${x.ok ? '<span class="ok">✓ Correcto</span>' : '<span class="mal">✗ Incorrecto</span>'} (${x.s.pts} pts) — ${escRetro(x.s.texto)}</p>
+      <p class="kv"><b>Su respuesta:</b> ${x.valor ? escRetro(x.valor) : '<span class="mal">Sin responder</span>'}</p>
+      ${x.ok ? '' : `<p class="kv"><b>Respuesta correcta:</b> <span class="resp-ok">${escRetro(x.s.respuesta)}</span></p>`}
+    </div>`;
+  });
+
+  // ---- Parte III ----
+  h += `<h2>Parte III · Prácticos — ${r.practicos.ok} de ${r.practicos.totalN} incisos</h2>`;
+  d.practicos.forEach(caso=>{
+    const ptsCaso = caso.items.reduce((a,i)=>a+i.ptsOk, 0);
+    const totCaso = caso.c.pts;
+    h += `<h3>${escRetro(caso.c.titulo)} — ${ptsCaso} / ${totCaso} pts · ${r.pct(ptsCaso, totCaso)}%</h3>`;
+    caso.items.forEach(x=>{
+      h += `<div class="item ${x.ok ? '' : 'malo'}">
+        <p class="q">${x.ok ? '<span class="ok">✓ Correcto</span>' : '<span class="mal">✗ Incorrecto</span>'} (${x.it.pts} pts) — ${escRetro(x.it.q)}</p>
+        <p class="kv"><b>Su respuesta:</b> ${x.valor ? escRetro(x.valor) : '<span class="mal">Sin responder</span>'}</p>
+        ${x.ok ? '' : `<p class="kv"><b>Lo que se esperaba:</b> <span class="resp-ok">${escRetro(x.it.r)}</span></p>`}
+      </div>`;
+    });
+  });
+
+  h += `<p class="pie">Retroalimentación generada automáticamente · Examen I IF011 Redes · ${fecha}</p>`;
+  h += `</div></body></html>`;
+
+  const blob = new Blob([h], {type:'text/html;charset=utf-8'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'retroalimentacion-' + (carnet ? carnet.replace(/[^0-9A-Za-z_-]/g,'') : 'examen') + '.html';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url), 4000);
 }
 
 /* ================================================================
@@ -522,11 +1017,76 @@ document.getElementById('btnPinOk').addEventListener('click', ()=>{
     document.getElementById('clave').classList.remove('hidden');
     document.querySelectorAll('.clave-resp').forEach(el=>el.classList.remove('hidden'));
     document.getElementById('clave').scrollIntoView({behavior:'smooth'});
+    if (document.getElementById('panelDivision').style.display === 'none') revelarDivision(); // el PIN del docente también revela y desbloquea
   } else {
     document.getElementById('pinError').classList.remove('hidden');
   }
 });
 document.getElementById('pinInput').addEventListener('keydown', e=>{ if (e.key==='Enter') document.getElementById('btnPinOk').click(); });
+
+/* ---- Clave de la Parte II: mostrar la división de bloques ---- */
+const CLAVE_DIVISION = '1977';
+const K_INTENTOS = 'examenIntentosDivision';
+const K_BLOQUEO  = 'examenDivisionBloqueada';
+function lsGet(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }
+function lsSet(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }
+function lsDel(k){ try{ localStorage.removeItem(k); }catch(e){} }
+let intentosDivision = parseInt(lsGet(K_INTENTOS) || '0', 10) || 0;
+let divisionBloqueada = lsGet(K_BLOQUEO) === '1';
+
+function msgDivision(texto, tipo){
+  const m = document.getElementById('msgDivision');
+  m.textContent = texto || '';
+  m.className = 'text-sm ' + (texto ? (tipo === 'error' ? 'text-red-600' : 'text-green-700') : 'hidden');
+}
+function mostrarFormDivision(mostrar){
+  const f = document.getElementById('formDivision');
+  f.classList.toggle('hidden', !mostrar);
+  f.classList.toggle('flex', mostrar);
+  if (mostrar){ document.getElementById('inputDivision').value=''; document.getElementById('inputDivision').focus(); }
+}
+function bloquearDivision(){
+  divisionBloqueada = true;
+  lsSet(K_BLOQUEO, '1');
+  mostrarFormDivision(false);
+  const b = document.getElementById('btnPedirDivision');
+  b.disabled = true;
+  b.classList.add('opacity-50','cursor-not-allowed');
+  msgDivision('Clave bloqueada tras 3 intentos fallidos. Consulte al docente.', 'error');
+}
+function revelarDivision(){
+  document.getElementById('panelDivision').style.display = '';
+  document.getElementById('ipsRespuestas').style.display = '';
+  document.getElementById('panelTopologia').removeAttribute('transform');
+  document.getElementById('svgGuia2').setAttribute('viewBox', '0 0 800 470');
+  document.getElementById('bgGuia2').setAttribute('height', '470');
+  const b = document.getElementById('btnPedirDivision');
+  b.disabled = false;
+  b.classList.remove('opacity-50','cursor-not-allowed');
+  b.classList.add('hidden');
+  mostrarFormDivision(false);
+  lsDel(K_INTENTOS);
+  lsDel(K_BLOQUEO);
+  intentosDivision = 0; divisionBloqueada = false;
+  msgDivision('División de bloques visible.', 'ok');
+}
+function intentarDivision(){
+  if (divisionBloqueada) return;
+  const inp = document.getElementById('inputDivision');
+  const val = (inp.value || '').trim();
+  if (val === CLAVE_DIVISION){ revelarDivision(); return; }
+  intentosDivision++;
+  lsSet(K_INTENTOS, String(intentosDivision));
+  if (intentosDivision >= 3){ bloquearDivision(); return; }
+  inp.value = '';
+  inp.focus();
+  msgDivision('Clave incorrecta. Intento ' + intentosDivision + ' de 3.', 'error');
+}
+document.getElementById('btnPedirDivision').addEventListener('click', ()=>{ if(!divisionBloqueada) mostrarFormDivision(true); });
+document.getElementById('btnOKDivision').addEventListener('click', intentarDivision);
+document.getElementById('btnCancelDivision').addEventListener('click', ()=>{ mostrarFormDivision(false); msgDivision(''); });
+document.getElementById('inputDivision').addEventListener('keydown', e=>{ if (e.key==='Enter') intentarDivision(); });
+if (divisionBloqueada) bloquearDivision();
 
 // Imprimir
 document.getElementById('btnImprimir').addEventListener('click', ()=>{ mostrarResultado(); setTimeout(()=>window.print(), 150); });
@@ -589,13 +1149,24 @@ async function guardarIntento(){
 
   try {
     const supabase = await getSupabase();
-    const { error } = await supabase.from('intentos').insert({
+    const payload = {
       nombre, carnet, grupo,
       pts_teoria: rI.pts,
       pts_subnet: rII.pts,
       pts_practicos: rIII.pts,
-      pts_total: total
-    });
+      pts_total: total,
+      respuestas: construirRespuestas()
+    };
+    let { error } = await supabase.from('intentos').insert(payload);
+    if (error && /respuestas/i.test(error.message || '')){
+      // La columna respuestas todavía no existe en Supabase: guarda sin ella.
+      delete payload.respuestas;
+      ({ error } = await supabase.from('intentos').insert(payload));
+      if (!error){
+        muestraEstado('zonaEstado', `Intento guardado (puntaje). Falta la columna respuestas: ejecute el UPDATE de schema.sql en Supabase para registrar también lo escrito. Puntaje: ${total} / 100.`, 'warn');
+        return;
+      }
+    }
     if (error) throw error;
     muestraEstado('zonaEstado', `Intento guardado. Su puntaje: ${total} / 100 pts. Solo usted y su docente pueden ver este resultado.`, 'ok');
   } catch (e) {

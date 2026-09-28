@@ -7,15 +7,24 @@ Examen interactivo de práctica con **guardado de intentos** en Supabase y **pan
 | Archivo | Para quién | Uso |
 |---|---|---|
 | `index.html` | Estudiantes | Responder el examen (se sirve en la raíz `/`) y guardar el intento |
-| `admin.html` | Docente | Reportes: quién practicó, cuántas veces y puntos por intento |
+| `admin.html` | Docente | Reportes: quién practicó, cuántas veces, puntos por intento **y las respuestas que escribió cada uno** |
 | `config.js` | Configuración | URL y anon key de Supabase |
-| `schema.sql` | Docente | Crea la tabla + reglas de seguridad (se ejecuta una sola vez) |
+| `schema.sql` | Docente | Crea la tabla + reglas de seguridad (se puede volver a pegar: es idempotente) |
 | `tailwind.js` | Local | Habilita el examen 100% offline (sin Internet) |
 
 ## Cómo funciona
 
-- **Estudiante:** responde → pulsa **"Revisar mi puntaje y guardar"** → ve su puntaje y sus aciertos/errores (solo los suyos) → el intento (nombre, carné, grupo, fecha, puntaje por parte y total) queda registrado en Supabase.
-- **Docente:** abre `admin.html` → inicia sesión con su correo UCR y contraseña → ve el resumen por estudiante y el historial completo, y puede exportar CSV.
+- **Estudiante:** responde → pulsa **"Revisar mi puntaje y guardar"** → ve la **nota desglosada** (puntos, % y
+  nota final 0–100, parte por parte) → puede **descargar su retroalimentación** (`retroalimentacion-<carnet>.html`):
+  indica cuántas buenas/malas tiene por parte y explica cada incorrecta con su respuesta, la correcta y el porqué
+  (teoría, subnetting y prácticos) → el intento (nombre, carné, grupo, fecha, puntos por parte, total **y todas
+  las respuestas que escribió**) queda registrado en Supabase.
+- **Docente:** abre `admin.html` → inicia sesión con su correo UCR y contraseña → ve el resumen por estudiante y el
+  historial completo, y en el **detalle** de cada estudiante puede desplegar **"Ver"** por intento para leer las
+  respuestas crudas: las incorrectas de la Parte I con su justificación, y **todo lo que el estudiante escribió** en
+  Parte II y III junto con la respuesta esperada (marcado ✓/✗). También puede exportar CSV.
+- **Orden aleatorio:** cada vez que se abre el examen se barajan las preguntas de cada semana, las opciones de
+  respuesta de cada pregunta, los 7 ítems de subnetting y los 3 casos prácticos. El puntaje y la clave no cambian.
 - **Privacidad:** los estudiantes solo **insertan** su intento; **no pueden leer** nada de nadie. Solo el docente autenticado ve los datos (política RLS en `schema.sql`).
 
 ## Configuración (una sola vez)
@@ -30,6 +39,15 @@ Examen interactivo de práctica con **guardado de intentos** en Supabase y **pan
 2. Copie TODO el contenido de `schema.sql`.
 3. **Importante:** edite la línea `auth.jwt() ->> 'email' = 'TU_CORREO_UCR'` y ponga su correo UCR.
 4. Pulse **Run**. Debe decir "Success".
+
+> **Tabla ya creada en una versión anterior:** vuelva a pegar TODO `schema.sql` y ejecútelo otra vez; agrega la
+> columna `respuestas` por sí solo. O ejecute solo esto en el SQL Editor:
+>
+> ```sql
+> alter table public.intentos add column if not exists respuestas jsonb;
+> ```
+>
+> Si la columna falta, el examen **igual guarda el puntaje** (solo muestra un aviso pidiendo aplicar el UPDATE).
 
 ### 3. Crear su usuario docente
 1. Vaya a **Authentication → Users → Add user**.
@@ -48,7 +66,8 @@ const SUPABASE_ANON_KEY = 'eyJ...';
 
 ### 5. Probar
 - Abra `index.html`, responda unas preguntas y pulse **"Revisar mi puntaje y guardar"**. Debe aparecer "Intento guardado".
-- Abra `admin.html`, inicie sesión con su correo UCR → debe ver el intento registrado.
+- Abra `admin.html`, inicie sesión con su correo UCR → debe ver el intento registrado → en **Detalle del estudiante**,
+  en la fila del intento, pulse **Ver** para leer las respuestas que escribió.
 
 ## Despliegue (Vercel)
 
@@ -74,3 +93,8 @@ En https://vercel.com → **Add New → Project** → importe el repositorio (fr
 - Los estudiantes **no pueden leer** intentos ajenos (RLS: insert permitido, select solo docente autenticado).
 - Solo el docente puede **actualizar/borrar** (revocado para anónimos en `schema.sql`).
 - La clave del profesor (PIN `0101`) revela las respuestas en pantalla; se mantiene solo para revisión en clase.
+- Parte II: la **división de bloques** del SVG de subnetting está oculta; se revela con la clave del docente (`1977`).
+  Al tercer intento fallido la clave queda **bloqueada** en ese navegador (persiste al recargar); el PIN `0101`
+  desbloquea y revela de todos modos.
+- Ambas claves están en el código fuente de `index.html`: quien abra "ver código fuente" puede leerlas. Si el
+  examen se usa como prueba formal, considere publicar solo la versión sin claves.

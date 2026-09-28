@@ -21,8 +21,14 @@ create table if not exists public.intentos (
   pts_teoria integer not null check (pts_teoria between 0 and 50),
   pts_subnet integer not null check (pts_subnet between 0 and 10),
   pts_practicos integer not null check (pts_practicos between 0 and 40),
-  pts_total integer not null check (pts_total between 0 and 100)
+  pts_total integer not null check (pts_total between 0 and 100),
+  -- Respuestas escritas por el estudiante (texto + si fue correcta) para
+  -- que el docente las revise desde admin.html.
+  respuestas jsonb
 );
+
+-- Si la tabla ya existía de una versión anterior, agrega la columna.
+alter table public.intentos add column if not exists respuestas jsonb;
 
 create index if not exists idx_intentos_carnet on public.intentos (carnet);
 create index if not exists idx_intentos_created on public.intentos (created_at desc);
