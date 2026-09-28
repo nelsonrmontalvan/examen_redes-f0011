@@ -1164,10 +1164,13 @@ async function guardarIntento(){
       ({ error } = await supabase.from('intentos').insert(payload));
       if (!error){
         muestraEstado('zonaEstado', `Intento guardado (puntaje). Falta la columna respuestas: ejecute el UPDATE de schema.sql en Supabase para registrar también lo escrito. Puntaje: ${total} / 100.`, 'warn');
+        lsDel(K_BORRADOR);
         return;
       }
     }
     if (error) throw error;
+    lsDel(K_BORRADOR);
+    const zb = document.getElementById('zonaBorrador'); if (zb) zb.remove();
     muestraEstado('zonaEstado', `Intento guardado. Su puntaje: ${total} / 100 pts. Solo usted y su docente pueden ver este resultado.`, 'ok');
   } catch (e) {
     console.error(e);
@@ -1178,13 +1181,116 @@ async function guardarIntento(){
 document.getElementById('btnRevisar').addEventListener('click', guardarIntento);
 
 /* ================================================================
+   BORRADOR AUTOMÁTICO (se guarda solo y se restaura al volver)
+   Las claves son el texto de la pregunta / id del ítem / título del
+   caso, así el orden aleatorio no afecta la restauración.
+================================================================== */
+const K_BORRADOR = 'examenBorrador';
+let tBorrador = null;
+
+function claveCaso(c){ return c.protocolo || c.titulo; }   // el título se renumera con la posición
+
+function datosBorrador(){
+  const b = { ts: Date.now(), nom: {}, teoria: {}, subnet: {}, pract: {} };
+  ['nombre','carnet','grupo'].forEach(id=>{
+    const v = (document.getElementById(id).value || '').trim();
+    if (v) b.nom[id] = v;
+  });
+  TEORIA.forEach((p, i)=>{
+    if (p.tipo === 'mc'){
+      const sel = document.querySelector(`input[name="t${i}"]:checked`);
+      if (sel) b.teoria[p.texto] = p.opciones[parseInt(sel.value, 10)];
+    } else {
+      const el = document.querySelector(`input[data-theory="${i}"]`);
+      if (el && el.value.trim()) b.teoria[p.texto] = el.value.trim();
+    }
+  });
+  SUBNET.forEach((s, i)=>{
+    const el = document.querySelector(`input[data-subnet="${i}"]`);
+    if (el && el.value.trim()) b.subnet[s.id] = el.value.trim();
+  });
+  PRACTICOS.forEach(c => c.items.forEach((it, ii)=>{
+    const ta = document.querySelector(`textarea[data-caso="${PRACTICOS.indexOf(c)}"][data-item="${ii}"]`);
+    if (ta && ta.value.trim()) b.pract[`${claveCaso(c)}###${ii}`] = ta.value.trim();
+  }));
+  return b;
+}
+
+function guardarBorrador(){
+  const b = datosBorrador();
+  const hay = Object.keys(b.nom).length + Object.keys(b.teoria).length +
+              Object.keys(b.subnet).length + Object.keys(b.pract).length;
+  if (!hay) return;   // nada escrito: no toca un borrador ya existente
+  lsSet(K_BORRADOR, JSON.stringify(b));
+}
+
+function programarBorrador(){
+  clearTimeout(tBorrador);
+  tBorrador = setTimeout(guardarBorrador, 400);
+}
+document.addEventListener('input',  e=>{ if (e.target && e.target.matches('input, textarea')) programarBorrador(); });
+document.addEventListener('change', e=>{ if (e.target && e.target.matches('input, textarea')) programarBorrador(); });
+
+function borrarBorrador(){ lsDel(K_BORRADOR); location.reload(); }
+
+function restaurarBorrador(){
+  const raw = lsGet(K_BORRADOR);
+  if (!raw) return;
+  let b; try { b = JSON.parse(raw); } catch(e){ return; }
+  if (!b || !b.ts) return;
+  if (Date.now() - b.ts > 7 * 24 * 3600 * 1000){ lsDel(K_BORRADOR); return; }  // borrador viejo
+
+  ['nombre','carnet','grupo'].forEach(id=>{
+    if (b.nom && b.nom[id]) document.getElementById(id).value = b.nom[id];
+  });
+  let n = 0;
+  Object.entries(b.teoria || {}).forEach(([texto, val])=>{
+    const i = TEORIA.findIndex(p => p.texto === texto);
+    if (i < 0) return;
+    const p = TEORIA[i];
+    if (p.tipo === 'mc'){
+      const oi = p.opciones.indexOf(val);
+      const el = oi >= 0 ? document.querySelector(`input[name="t${i}"][value="${oi}"]`) : null;
+      if (el){ el.checked = true; n++; }
+    } else {
+      const el = document.querySelector(`input[data-theory="${i}"]`);
+      if (el){ el.value = val; n++; }
+    }
+  });
+  Object.entries(b.subnet || {}).forEach(([idSub, val])=>{
+    const i = SUBNET.findIndex(s => s.id === idSub);
+    const el = i >= 0 ? document.querySelector(`input[data-subnet="${i}"]`) : null;
+    if (el){ el.value = val; n++; }
+  });
+  Object.entries(b.pract || {}).forEach(([clave, val])=>{
+    const [idCaso, ii] = clave.split('###');
+    const ci = PRACTICOS.findIndex(c => claveCaso(c) === idCaso);
+    const el = ci >= 0 ? document.querySelector(`textarea[data-caso="${ci}"][data-item="${ii}"]`) : null;
+    if (el){ el.value = val; n++; }
+  });
+  if (!n && !Object.keys(b.nom || {}).length) return;
+
+  const f = new Date(b.ts);
+  const z = x => String(x).padStart(2, '0');
+  const fecha = `${z(f.getDate())}/${z(f.getMonth()+1)} ${z(f.getHours())}:${z(f.getMinutes())}`;
+  const zona = document.createElement('div');
+  zona.id = 'zonaBorrador';
+  zona.className = 'no-print mt-4 text-sm font-semibold rounded px-4 py-3 bg-amber-50 border border-amber-300 text-amber-800 flex flex-wrap items-center justify-between gap-3';
+  zona.innerHTML = `<span>Se restauró su borrador del ${fecha} (${n} ${n===1?'respuesta':'respuestas'}). Siga donde quedó.</span>
+    <button type="button" id="btnBorrarBorrador" class="bg-white border border-amber-400 text-amber-800 px-3 py-1.5 rounded text-xs font-bold hover:bg-amber-100">Empezar de cero</button>`;
+  document.querySelector('main').insertBefore(zona, document.querySelector('main').firstChild);
+  document.getElementById('btnBorrarBorrador').addEventListener('click', borrarBorrador);
+}
+
+/* ================================================================
    INIT
-================================================================ */
+=================================================== */
 const main = document.querySelector('main');
 renderTeoria();
 renderSubnet();
 renderPracticos();
 renderClave();
+restaurarBorrador();
 </script>
 </body>
 </html>
